@@ -18,9 +18,10 @@ import ru.practicum.ewm.category.service.CategoryService;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.request.model.Request;
 import ru.practicum.ewm.request.model.RequestState;
+import ru.practicum.ewm.stats.EndpointHit;
+import ru.practicum.ewm.stats.EventStatClient;
 import ru.practicum.ewm.user.service.UserService;
 import ru.practicum.ewm.stats.Stat;
-import ru.practicum.ewm.stats.ViewStats;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,6 +56,8 @@ public class EventServiceImpl implements EventService {
     private final WebClient webClient;
     private final ModelMapper mapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private final EventStatClient eventStatClient;
 
     //////////////// EventsController ///////////////////
     @Override
@@ -135,49 +137,23 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getSortedEvents(String text, List<Long> categories,
                                                Boolean paid, String rangeStart,
                                                String rangeEnd, Integer from,
-                                               Integer size, HttpServletRequest request) {
+                                               Integer size, HttpServletRequest request, EndpointHit endpointHit) {
         log.info("Получение событий с возможностью фильтрации EventServiceImpl.getSortedEvents text={}, " +
                         "categories={}, paid={}, rangeStart={}, rangeEnd={}, from={}, size={}, request = {}",
                 text, categories, paid, rangeStart, rangeEnd, from, size, request);
+        eventStatClient.sendHit(endpointHit);
         List<EventShortDto> eventShortDtos = new ArrayList<>();
         List<Event> events = eventRepository.findAllWithMoreRequirements(text, categories, paid,
                 LocalDateTime.parse(rangeStart, formatter), LocalDateTime.parse(rangeEnd, formatter),
                 PageRequest.of(from / size, size, Sort.by("id").descending())
         );
-        List<String> uriAddress = new ArrayList<>();
 
-        for (Event event : events)
-            uriAddress.add(request.getRequestURI() + "/" + event.getId());
-        postStats(request, uriAddress);
-        Mono<Object[]> responseViewStats = webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/stats")
-                        .queryParam("start", rangeStart.replace("T", " "))
-                        .queryParam("end", rangeEnd.replace("T", " "))
-                        .queryParam("uris", uriAddress)
-                        .queryParam("unique", false)
-                        .build())
-                .retrieve()
-                .bodyToMono(Object[].class);
-
-        Object[] objects = responseViewStats.block();
-        List<ViewStats> views = new ArrayList<>();
-
-        if (objects != null)
-            views = Arrays
-                    .stream(objects)
-                    .map(o -> mapper.map(o, ViewStats.class))
-                    .collect(Collectors.toList());
         for (Event event : events) {
-            EventShortDto eventShortDto = toEventShortDto(event,
+            EventShortDto eventShortDto = toEventShortDto(
+                    event,
                     toCategoryFromCategoryDto(categoryService.getCategoryById(event.getCategory())),
                     userService.getUser(event.getInitiator())
             );
-            eventShortDto.setViews(views.stream()
-                    .map(ViewStats::getHits)
-                    .mapToLong(Long::longValue)
-                    .sum());
             eventShortDtos.add(eventShortDto);
         }
         return eventShortDtos;
@@ -185,43 +161,15 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
+    public EventFullDto getEventById(Long eventId, HttpServletRequest request, EndpointHit endpointHit) {
         log.info("Получение подробной информации об опубликованном событии по его идентификатору " +
                 "EventServiceImpl.getEventById, eventId = {}, request = {}", eventId, request);
+        eventStatClient.sendHit(endpointHit);
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format("События с id %d не существует", eventId)));
         User user = userService.getUser(event.getInitiator());
         Category category = toCategoryFromCategoryDto(categoryService.getCategoryById(event.getCategory()));
-        Stat stat = new Stat();
-        stat.setApp("ewm-main-service");
-        stat.setIp(request.getRemoteAddr());
-        stat.setUri(request.getRequestURI());
-        stat.setTimestamp(LocalDateTime.now());
-        webClient.post()
-                .uri("/hit")
-                .body(Mono.just(stat), Stat.class)
-                .exchangeToMono(rs -> Mono.just(rs.mutate()))
-                .block();
-        List<String> uriAddress = new ArrayList<>();
-        uriAddress.add(request.getRequestURI());
-        Mono<Object[]> responseViewStats = webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/stats")
-                        .queryParam("uris", uriAddress)
-                        .queryParam("unique", false)
-                        .build())
-                .retrieve()
-                .bodyToMono(Object[].class);
-        Object[] objects = responseViewStats.block();
-        List<ViewStats> views = new ArrayList<>();
-        if (objects != null) {
-            views = Arrays.stream(objects)
-                    .map(o -> mapper.map(o, ViewStats.class)).collect(Collectors.toList());
-        }
-        EventFullDto eventFullDto = toEventFullDto(event, user, category);
-        eventFullDto.setViews(views.get(0).getHits());
-        return eventFullDto;
+        return toEventFullDto(event, user, category);
     }
 
 

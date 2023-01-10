@@ -1,5 +1,6 @@
 package ru.practicum.ewm.stats;
 
+
 import lombok.*;
 
 @AllArgsConstructor

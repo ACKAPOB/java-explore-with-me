@@ -6,10 +6,13 @@ import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.service.EventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.ewm.stats.Constant;
+import ru.practicum.ewm.stats.EndpointHit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -31,13 +34,21 @@ public class PublicEventController {
         log.info("Получение событий с возможностью фильтрации PublicEventController.getSortedEvents text={}, " +
                         "categories={}, paid={}, rangeStart={}, rangeEnd={}, from={}, size={}, request = {}",
                 text, categories, paid, rangeStart, rangeEnd, from, size, request);
-        return eventService.getSortedEvents(text, categories, paid, rangeStart, rangeEnd, from, size, request);
+        EndpointHit endpointHit = new EndpointHit(Constant.APP_NAME,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.now());
+        return eventService.getSortedEvents(text, categories, paid, rangeStart, rangeEnd, from, size, request, endpointHit);
     }
 
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable Long eventId, HttpServletRequest request) {
         log.info("Получение подробной информации об опубликованном событии по его идентификатору " +
                 "PublicEventController.getEventById, eventId = {}, request = {}", eventId, request);
-        return eventService.getEventById(eventId, request);
+        EndpointHit endpointHit = new EndpointHit(Constant.APP_NAME,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.now());
+        return eventService.getEventById(eventId, request, endpointHit);
     }
 }
