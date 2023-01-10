@@ -2,8 +2,8 @@ package ru.practicum.ewm.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import ru.practicum.ewm.dto.UserDto;
-import ru.practicum.ewm.service.UserService;
+import ru.practicum.ewm.user.dto.UserDto;
+import ru.practicum.ewm.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

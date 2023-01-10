@@ -2,9 +2,9 @@ package ru.practicum.ewm.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import ru.practicum.ewm.dto.CategoryDto;
-import ru.practicum.ewm.dto.NewCategoryDto;
-import ru.practicum.ewm.service.impl.CategoryServiceImpl;
+import ru.practicum.ewm.category.dto.CategoryDto;
+import ru.practicum.ewm.category.dto.NewCategoryDto;
+import ru.practicum.ewm.category.service.impl.CategoryServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

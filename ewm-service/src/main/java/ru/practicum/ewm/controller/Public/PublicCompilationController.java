@@ -1,8 +1,8 @@
 package ru.practicum.ewm.controller.Public;
 
 import lombok.RequiredArgsConstructor;
-import ru.practicum.ewm.dto.CompilationDto;
-import ru.practicum.ewm.service.CompilationService;
+import ru.practicum.ewm.compilation.dto.CompilationDto;
+import ru.practicum.ewm.compilation.service.CompilationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

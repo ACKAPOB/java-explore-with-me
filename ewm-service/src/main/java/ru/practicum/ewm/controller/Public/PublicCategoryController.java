@@ -1,8 +1,8 @@
 package ru.practicum.ewm.controller.Public;
 
 import lombok.RequiredArgsConstructor;
-import ru.practicum.ewm.dto.CategoryDto;
-import ru.practicum.ewm.service.CategoryService;
+import ru.practicum.ewm.category.dto.CategoryDto;
+import ru.practicum.ewm.category.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

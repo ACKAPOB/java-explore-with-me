@@ -1,10 +1,10 @@
 package ru.practicum.ewm.controller.user;
 
 import lombok.RequiredArgsConstructor;
-import ru.practicum.ewm.dto.EventFullDto;
-import ru.practicum.ewm.dto.NewEventDto;
-import ru.practicum.ewm.dto.RequestDto;
-import ru.practicum.ewm.service.EventService;
+import ru.practicum.ewm.event.dto.EventFullDto;
+import ru.practicum.ewm.event.dto.NewEventDto;
+import ru.practicum.ewm.request.dto.RequestDto;
+import ru.practicum.ewm.event.service.EventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

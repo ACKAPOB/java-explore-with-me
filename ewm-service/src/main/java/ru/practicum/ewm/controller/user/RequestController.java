@@ -1,8 +1,8 @@
 package ru.practicum.ewm.controller.user;
 
 import lombok.RequiredArgsConstructor;
-import ru.practicum.ewm.dto.RequestDto;
-import ru.practicum.ewm.service.RequestService;
+import ru.practicum.ewm.request.dto.RequestDto;
+import ru.practicum.ewm.request.service.RequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
