@@ -8,10 +8,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>stat-service</artifactId>
+    <artifactId>stats-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>Stat Service</name>
+    <name>Stats</name>
 
     <dependencies>
         <dependency>
@@ -71,7 +71,7 @@
                 <configuration>
                     <excludes>
                         <exclude>
-                            <groupId>org.projectlombok</groupId>
+                            <groupId>org.project-lombok</groupId>
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
