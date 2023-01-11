@@ -1,33 +1,5 @@
 version: '3.1'
 services:
-  ewm-service:
-    build: ./ewm-service
-    image: service_image
-    container_name: service_container
-    ports:
-      - "8080:8080"
-    depends_on:
-      - stats-server
-      - ewm-db
-    environment:
-      - POSTGRES_DB=service
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/service
-      - EXPLORE-SERVER_URL=http://stats-server:9090
-
-  ewm-db:
-    image: postgres:14-alpine
-    container_name: ewm-db
-    volumes:
-      - /var/lib/postgresql/data/
-    ports:
-      - "6541:5432"
-    environment:
-      - POSTGRES_DB=service
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-
   stats-server:
     build: ./stats
     image: stats_image
@@ -36,10 +8,11 @@ services:
       - "9090:9090"
     depends_on:
       - stats-db
+      - ewm-service
     environment:
-      - POSTGRES_DB=stats
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+      - explore-with-me-main.url=http://ewm-service:8080
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
 
   stats-db:
@@ -53,4 +26,32 @@ services:
       - POSTGRES_DB=stats
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+
+  ewm-service:
+    build: ./ewm-service
+    image: service_image
+    container_name: explore-with-me-main
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ewm-db
+    environment:
+      - explore-with-me-stats.url=http://stats-server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://main-db:5432/main
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+
+  ewm-db:
+    image: postgres:14-alpine
+    container_name: ewm-db
+    volumes:
+      - /var/lib/postgresql/data/
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=service
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+
+
 
