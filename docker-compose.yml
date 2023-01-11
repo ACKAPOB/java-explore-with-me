@@ -1,9 +1,9 @@
-version: '3.1'
+version: '3.8'
 services:
   stats-server:
-    build: ./stats
-    image: stats_image
-    container_name: stats_container
+    build:  stat-service/
+    restart: always
+    container_name: explore-with-me-stats
     ports:
       - "9090:9090"
     depends_on:
@@ -11,47 +11,46 @@ services:
       - ewm-service
     environment:
       - explore-with-me-main.url=http://ewm-service:8080
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
+      - SPRING_DATASOURCE_USERNAME=adm
+      - SPRING_DATASOURCE_PASSWORD=password
 
   stats-db:
     image: postgres:14-alpine
-    container_name: stats_db
+    container_name: stats-db
+    restart: always
     volumes:
-      - /var/lib/postgresql/data/
+      - /var/lib/postgresql/data
     ports:
-      - "6542:5432"
+      - "6591:5432"
     environment:
+      - POSTGRES_USER=adm
+      - POSTGRES_PASSWORD=password
       - POSTGRES_DB=stats
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
 
   ewm-service:
-    build: ./ewm-service
-    image: service_image
+    build: main-service/
+    restart: always
     container_name: explore-with-me-main
     ports:
       - "8080:8080"
     depends_on:
-      - ewm-db
+      - main-db
     environment:
       - explore-with-me-stats.url=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://main-db:5432/main
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_USERNAME=adm
+      - SPRING_DATASOURCE_PASSWORD=password
 
-  ewm-db:
+  main-db:
     image: postgres:14-alpine
-    container_name: ewm-db
+    container_name: main-db
+    restart: always
     volumes:
-      - /var/lib/postgresql/data/
+      - /var/lib/postgresql/data
     ports:
-      - "6541:5432"
+      - "6581:5432"
     environment:
-      - POSTGRES_DB=service
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-
-
-
+      - POSTGRES_USER=adm
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=main
