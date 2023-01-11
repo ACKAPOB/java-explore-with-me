@@ -22,7 +22,6 @@ import ru.practicum.ewm.stats.EndpointHit;
 import ru.practicum.ewm.stats.EventStatClient;
 import ru.practicum.ewm.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,6 @@ public class EventServiceImpl implements EventService {
     private final RequestRepository requestRepository;
     private final UserService userService;
     private final CategoryService categoryService;
-    private final ModelMapper mapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final EventStatClient eventStatClient;
