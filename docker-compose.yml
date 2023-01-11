@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   stats-server:
-    build:  stat-service/
+    build:  stats/
     restart: always
     container_name: explore-with-me-stats
     ports:
@@ -29,7 +29,7 @@ services:
       - POSTGRES_DB=stats
 
   ewm-service:
-    build: main-service/
+    build: ewm-service/
     restart: always
     container_name: explore-with-me-main
     ports:
