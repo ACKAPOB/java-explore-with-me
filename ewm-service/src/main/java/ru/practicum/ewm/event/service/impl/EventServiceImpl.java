@@ -21,14 +21,11 @@ import ru.practicum.ewm.request.model.RequestState;
 import ru.practicum.ewm.stats.EndpointHit;
 import ru.practicum.ewm.stats.EventStatClient;
 import ru.practicum.ewm.user.service.UserService;
-import ru.practicum.ewm.stats.Stat;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import ru.practicum.ewm.user.model.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +50,6 @@ public class EventServiceImpl implements EventService {
     private final RequestRepository requestRepository;
     private final UserService userService;
     private final CategoryService categoryService;
-    private final WebClient webClient;
     private final ModelMapper mapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -302,20 +298,6 @@ public class EventServiceImpl implements EventService {
     }
 
     //////////////////////////////////////////////
-
-    private void postStats(HttpServletRequest request, List<String> uriAddress) {
-        log.info("Метод EventServiceImpl.postStats request = {}, uriAddress = {},", request, uriAddress);
-        Stat stat = new Stat();
-        stat.setApp("ewm-main-service");
-        stat.setIp(request.getRemoteAddr());
-        stat.setUri(uriAddress.toString());
-        stat.setTimestamp(LocalDateTime.now());
-        webClient.post()
-                .uri("/hit")
-                .body(Mono.just(stat), Stat.class)
-                .exchangeToMono(rs -> Mono.just(rs.mutate()))
-                .block();
-    }
 
     private EventFullDto updateEventExtraction(NewEventDto newEventDto, Event event, User user, Category category) {
         log.info("Метод EventServiceImpl.updateEventExtraction newEventDto = {}, event = {},", newEventDto, event);
