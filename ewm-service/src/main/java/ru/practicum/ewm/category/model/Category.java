@@ -11,7 +11,6 @@ import java.util.Objects;
 @Getter
 @ToString
 @Builder
-@Entity
 @Table(name = "categories")
 public class Category {
 
