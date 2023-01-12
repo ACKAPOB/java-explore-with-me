@@ -7,9 +7,6 @@ import ru.practicum.explore.model.Hit;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Интерфейс репозитория статистики
- */
 public interface StatsRepository extends JpaRepository<Hit, Integer> {
     /*
     Получения всех uri  за заданный период

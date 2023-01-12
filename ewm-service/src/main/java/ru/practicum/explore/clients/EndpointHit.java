@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Dto для ендпоинта сохранения в stats-service
- */
 @Data
 @Builder
 @NoArgsConstructor

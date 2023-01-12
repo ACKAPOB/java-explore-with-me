@@ -6,9 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.explore.location.model.Location;
 
-/**
- * Dto для добавления события
- */
 @Data
 @Builder
 @NoArgsConstructor

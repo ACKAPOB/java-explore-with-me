@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Dto запроса на участие в событие
- */
 @Data
 @Builder
 @NoArgsConstructor

@@ -11,9 +11,6 @@ import ru.practicum.explore.exception.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
 
-/**
- * Обработка ошибок
- */
 @RestControllerAdvice
 public class ExceptionHandlers {
     @ExceptionHandler(ObjectNotFoundException.class)

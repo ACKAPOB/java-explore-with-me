@@ -10,9 +10,6 @@ import ru.practicum.explore.user.dto.UserShortDto;
 
 import java.util.List;
 
-/**
- * Dto получение краткой информации о событие
- */
 @Data
 @Builder
 @NoArgsConstructor

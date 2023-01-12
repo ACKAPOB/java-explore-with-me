@@ -6,9 +6,6 @@ import ru.practicum.explore.model.Hit;
 
 import java.util.List;
 
-/**
- * Интерфейс маппера статистики
- */
 public interface HitMapper {
     /*
     Метод маппера для получения модели

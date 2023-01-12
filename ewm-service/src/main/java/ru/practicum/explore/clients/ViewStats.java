@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Dto для получение статистики с stats-service
- */
 @Data
 @Builder
 @NoArgsConstructor

@@ -12,9 +12,6 @@ import ru.practicum.explore.event.model.Status;
 
 import java.util.List;
 
-/**
- * Dto для получения полной информации о событие
- */
 @Data
 @Builder
 @NoArgsConstructor

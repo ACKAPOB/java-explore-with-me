@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Dto для добовления новой подборки
- */
 @Data
 @Builder
 @NoArgsConstructor

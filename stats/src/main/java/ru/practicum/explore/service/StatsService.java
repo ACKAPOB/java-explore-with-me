@@ -6,9 +6,6 @@ import ru.practicum.explore.dto.ViewStats;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Интерфейс сервиса статистики
- */
 public interface StatsService {
     /*
     Сохранение статистики
