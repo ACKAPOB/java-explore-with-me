@@ -1,15 +1,13 @@
 package ru.practicum.explore.category.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "categories", schema = "public")
-@Data
+@Table(name = "categories")
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
