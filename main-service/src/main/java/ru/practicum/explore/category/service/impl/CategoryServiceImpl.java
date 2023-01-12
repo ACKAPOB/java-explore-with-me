@@ -1,0 +1,49 @@
+package ru.practicum.explore.category.service.impl;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import ru.practicum.explore.category.dto.CategoryDto;
+import ru.practicum.explore.category.service.CategoryService;
+import ru.practicum.explore.exception.ObjectNotFoundException;
+import ru.practicum.explore.category.mapper.CategoryMapper;
+import ru.practicum.explore.category.model.Category;
+import ru.practicum.explore.category.repository.CategoryRepository;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Slf4j
+public class CategoryServiceImpl implements CategoryService {
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+
+    @Autowired
+    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
+        this.categoryRepository = categoryRepository;
+        this.categoryMapper = categoryMapper;
+    }
+
+    @Override
+    public Collection<CategoryDto> findAllCategory(Integer from, Integer size) {
+        log.info("Получение категорий  CategoryServiceImpl.findAllCategory");
+        Page<Category> categoryCollection = categoryRepository.findAll(PageRequest.of(from / size, size));
+        Collection<CategoryDto> listCategoryDto = categoryCollection.stream()
+                .map(categoryMapper::toCategoryDto)
+                .collect(Collectors.toList());
+        return listCategoryDto;
+    }
+
+    @Override
+    public Optional<CategoryDto> getCategoryById(Long catId) {
+        log.info("Получение информации о категории по её идентификатору CategoryServiceImpl.getCategoryById" +
+                "  catId = {}", catId);
+        Category category = categoryRepository.findById(catId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Category not found id = %s", catId)));
+        return Optional.of(categoryMapper.toCategoryDto(category));
+    }
+}
