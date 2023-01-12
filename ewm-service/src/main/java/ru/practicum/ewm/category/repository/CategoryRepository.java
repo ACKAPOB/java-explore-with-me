@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-
+    //vb/,. .,mcv b,.v
     @Query(value = "SELECT * FROM categories c " +
             "LEFT JOIN events e on c.id = e.category_id " +
             "WHERE category_id=:id", nativeQuery = true)
