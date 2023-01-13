@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explore.exception.ApiError;
-import ru.practicum.explore.exception.ForbiddenRequestException;
+import ru.practicum.explore.exception.ErrorRequestException;
 import ru.practicum.explore.exception.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class ExceptionHandlers {
                 .build();
     }
 
-    @ExceptionHandler(ForbiddenRequestException.class)
+    @ExceptionHandler(ErrorRequestException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiError forbidden(RuntimeException e) {
         return ApiError.builder()

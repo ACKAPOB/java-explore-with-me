@@ -8,9 +8,7 @@ import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -25,7 +23,7 @@ public class PublicEventController {
     }
 
     @GetMapping
-    public Collection<EventShortDto> getAllEvent(@RequestParam String text,
+    public List<EventShortDto> getAllEvent(@RequestParam String text,
                                             @RequestParam List<Long> categories,
                                             @RequestParam Boolean paid,
                                             @RequestParam String rangeStart,
@@ -35,20 +33,9 @@ public class PublicEventController {
                                             @RequestParam(defaultValue = "0") Integer from,
                                             @RequestParam(defaultValue = "10") Integer size,
                                             HttpServletRequest request) {
-        Map<String, Object> parameters = Map.of(
-                "text", text,
-                "categories", categories,
-                "paid", paid,
-                "rangeStart", rangeStart,
-                "rangeEnd", rangeEnd,
-                "onlyAvailable", onlyAvailable,
-                "sort", sort,
-                "from", from,
-                "size", size
-        );
-        log.info("Получение событий с возможностью фильтрации PublicEventController.getAllEvent {}", parameters);
-        eventService.saveInStatService(request);
-        return eventService.getAllEvent(parameters);
+        log.info("Получение событий с возможностью фильтрации PublicEventController.getAllEvent text = {}", text);
+        eventService.saveInStatService(request);;
+        return eventService.getAllEvent(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
     @GetMapping("/{eventId}")

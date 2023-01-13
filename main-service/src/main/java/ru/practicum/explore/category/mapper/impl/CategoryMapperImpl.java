@@ -25,11 +25,9 @@ public class CategoryMapperImpl implements CategoryMapper {
 
     @Override
     public void updateCategoryFromCategoryDto(CategoryDto categoryDto, Category category) {
-        if (categoryDto.getId() != null) {
+        if (categoryDto.getId() != null)
             category.setId(category.getId());
-        }
-        if (categoryDto.getName() != null) {
+        if (categoryDto.getName() != null)
             category.setName(categoryDto.getName());
-        }
     }
 }

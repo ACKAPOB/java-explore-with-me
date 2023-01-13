@@ -7,10 +7,11 @@ import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
-import ru.practicum.explore.request.dto.ParticipationRequestDto;
+import ru.practicum.explore.request.dto.RequestDto;
 import ru.practicum.explore.user.service.UserService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users/{userId}/events")
@@ -61,23 +62,23 @@ public class PrivateUserEventController {
     }
 
     @GetMapping("/{eventId}/requests")
-    public Collection<ParticipationRequestDto> getRequestByUser(@PathVariable Long userId, @PathVariable Long eventId) {
+    public List<RequestDto> getRequestByUser(@PathVariable Long userId, @PathVariable Long eventId) {
         log.info("Получение информации о запросах на участие в событии текущего пользователя " +
                 "PrivateUserEventController.getRequestByUser userId = {}, eventId={}", userId, eventId);
         return userService.getRequestByUser(userId, eventId);
     }
 
     @PatchMapping("/{eventId}/requests/{reqId}/confirm")
-    public ParticipationRequestDto approveConfirmUserByEvent(@PathVariable Long userId, @PathVariable Long eventId,
-                                                             @PathVariable Long reqId) {
+    public RequestDto approveConfirmUserByEvent(@PathVariable Long userId, @PathVariable Long eventId,
+                                                @PathVariable Long reqId) {
         log.info("Подтверждение чужой заявки на участие в событии текущего пользователя reqId = {}, userId = {}, " +
                 "eventId = {} PrivateUserEventController.approveConfirmUserByEvent", reqId, userId, eventId);
         return userService.approveConfirmUserByEvent(userId, eventId, reqId);
     }
 
     @PatchMapping("/{eventId}/requests/{reqId}/reject")
-    public ParticipationRequestDto approveRejectUserByEvent(@PathVariable Long userId, @PathVariable Long eventId,
-                                                            @PathVariable Long reqId) {
+    public RequestDto approveRejectUserByEvent(@PathVariable Long userId, @PathVariable Long eventId,
+                                               @PathVariable Long reqId) {
         log.info("Отклонение чужой заявки на участие в событии текущего пользователя. reqId ={}, userId={}, " +
                 "eventId={} PrivateUserEventController.approveRejectUserByEvent", reqId, userId, eventId);
         return userService.approveRejectUserByEvent(userId, eventId, reqId);

@@ -6,7 +6,7 @@ import ru.practicum.explore.exception.ObjectNotFoundException;
 import ru.practicum.explore.category.repository.CategoryRepository;
 import ru.practicum.explore.compilation.repository.CompilationRepository;
 import ru.practicum.explore.event.repository.EventRepository;
-import ru.practicum.explore.request.repository.ParticipationRequestRepository;
+import ru.practicum.explore.request.repository.RequestRepository;
 import ru.practicum.explore.user.repository.UserRepository;
 
 @Component
@@ -15,17 +15,17 @@ public class ObjectValidate {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final ParticipationRequestRepository participationRequestRepository;
+    private final RequestRepository requestRepository;
 
     @Autowired
     public ObjectValidate(CategoryRepository categoryRepository, CompilationRepository compilationRepository,
                           EventRepository eventRepository, UserRepository userRepository,
-                          ParticipationRequestRepository participationRequestRepository) {
+                          RequestRepository requestRepository) {
         this.categoryRepository = categoryRepository;
         this.compilationRepository = compilationRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
-        this.participationRequestRepository = participationRequestRepository;
+        this.requestRepository = requestRepository;
     }
 
     public void validateUser(Long userId) {
@@ -41,7 +41,7 @@ public class ObjectValidate {
     }
 
     public void validateRequest(Long reqId) {
-        if (!participationRequestRepository.findById(reqId).isPresent()) {
+        if (!requestRepository.findById(reqId).isPresent()) {
             throw new ObjectNotFoundException(String.format("Request not found id=%s", reqId));
         }
     }

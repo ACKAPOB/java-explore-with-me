@@ -4,9 +4,10 @@ import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
-import ru.practicum.explore.request.dto.ParticipationRequestDto;
+import ru.practicum.explore.request.dto.RequestDto;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface UserService {
 
@@ -20,15 +21,9 @@ public interface UserService {
 
     EventFullDto cancelEvent(Long userId, Long eventId);
 
-    Collection<ParticipationRequestDto> getRequestByUser(Long userId, Long eventId);
+    List<RequestDto> getRequestByUser(Long userId, Long eventId);
 
-    ParticipationRequestDto approveConfirmUserByEvent(Long userId, Long eventId, Long reqId);
+    RequestDto approveConfirmUserByEvent(Long userId, Long eventId, Long reqId);
 
-    ParticipationRequestDto approveRejectUserByEvent(Long userId, Long eventId, Long reqId);
-
-    Collection<ParticipationRequestDto> getRequestsByUser(Long userId);
-
-    ParticipationRequestDto postRequestUser(Long userId, Long eventId);
-
-    ParticipationRequestDto cancelRequestByUser(Long userId, Long requestId);
+    RequestDto approveRejectUserByEvent(Long userId, Long eventId, Long reqId);
 }

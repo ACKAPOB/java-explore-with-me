@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParticipationRequestDto {
+public class RequestDto {
     private Long id;
     private String created;
     private Long event;

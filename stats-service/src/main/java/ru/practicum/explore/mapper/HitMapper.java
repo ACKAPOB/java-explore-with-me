@@ -7,18 +7,10 @@ import ru.practicum.explore.model.Hit;
 import java.util.List;
 
 public interface HitMapper {
-    /*
-    Метод маппера для получения модели
-    */
+
     Hit toHit(EndpointHit endpointHit);
 
-    /*
-    Метод маппера для получения из модели в dto
-    */
     EndpointHit toEndpointHit(Hit hit);
 
-    /*
-    Метод маппера получения статистики
-    */
     ViewStats toViewStats(List<Hit> list);
 }

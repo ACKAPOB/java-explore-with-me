@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "compilations", schema = "public")
+@Table(name = "compilations")
 @Data
 @Builder
 @NoArgsConstructor

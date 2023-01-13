@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class UpdateEventRequest {
     private Long eventId;
     private String annotation;
-    private Integer category;
+    private Long category;
     private String description;
     private String eventDate;
     private Boolean paid;

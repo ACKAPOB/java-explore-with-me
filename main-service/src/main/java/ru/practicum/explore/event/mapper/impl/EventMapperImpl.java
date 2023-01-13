@@ -3,7 +3,7 @@ package ru.practicum.explore.event.mapper.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import ru.practicum.explore.clients.stat.StatClient;
+import ru.practicum.explore.clients.StatClient;
 import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.event.dto.*;
 import ru.practicum.explore.event.mapper.EventMapper;
@@ -12,7 +12,7 @@ import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.user.model.User;
-import ru.practicum.explore.request.repository.ParticipationRequestRepository;
+import ru.practicum.explore.request.repository.RequestRepository;
 import ru.practicum.explore.request.model.StatusRequest;
 
 import java.time.LocalDateTime;
@@ -26,15 +26,15 @@ public class EventMapperImpl implements EventMapper {
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
     private final StatClient statClient;
-    private final ParticipationRequestRepository participationRequestRepository;
+    private final RequestRepository requestRepository;
 
     @Autowired
     public EventMapperImpl(CategoryMapper categoryMapper, UserMapper userMapper, StatClient statClient,
-                           ParticipationRequestRepository participationRequestRepository) {
+                           RequestRepository requestRepository) {
         this.categoryMapper = categoryMapper;
         this.userMapper = userMapper;
         this.statClient = statClient;
-        this.participationRequestRepository = participationRequestRepository;
+        this.requestRepository = requestRepository;
     }
 
     public Integer getViews(Long id) {
@@ -51,7 +51,7 @@ public class EventMapperImpl implements EventMapper {
     }
 
     public Integer getConfirmedRequests(Long id) {
-        Integer limitParticipant = participationRequestRepository.countByEvent_IdAndStatus(id, StatusRequest.CONFIRMED);
+        Integer limitParticipant = requestRepository.countByEvent_IdAndStatus(id, StatusRequest.CONFIRMED);
         return limitParticipant;
     }
 

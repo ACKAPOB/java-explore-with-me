@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.service.CategoryService;
 
-import java.util.Collection;
+
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,8 +22,8 @@ public class PublicCategoryController {
     }
 
     @GetMapping
-    public Collection<CategoryDto> findAllCategory(@RequestParam(defaultValue = "0") Integer from,
-                                                   @RequestParam(defaultValue = "10") Integer size) {
+    public List<CategoryDto> findAllCategory(@RequestParam(defaultValue = "0") Integer from,
+                                             @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение категорий  PublicCategoryController.findAllCategory");
         return categoryService.findAllCategory(from, size);
     }

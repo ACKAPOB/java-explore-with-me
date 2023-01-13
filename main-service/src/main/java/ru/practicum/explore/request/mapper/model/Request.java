@@ -1,9 +1,6 @@
 package ru.practicum.explore.request.mapper.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.request.model.StatusRequest;
@@ -12,12 +9,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "requests", schema = "public")
-@Data
+@Table(name = "requests")
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParticipationRequest {
+public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

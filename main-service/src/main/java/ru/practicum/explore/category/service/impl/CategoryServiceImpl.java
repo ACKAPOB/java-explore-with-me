@@ -2,7 +2,6 @@ package ru.practicum.explore.category.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.dto.CategoryDto;
@@ -12,7 +11,7 @@ import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,13 +23,13 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public Collection<CategoryDto> findAllCategory(Integer from, Integer size) {
+    public List<CategoryDto> findAllCategory(Integer from, Integer size) {
         log.info("Получение категорий  CategoryServiceImpl.findAllCategory");
-        Page<Category> categoryCollection = categoryRepository.findAll(PageRequest.of(from / size, size));
-        Collection<CategoryDto> listCategoryDto = categoryCollection.stream()
+        return categoryRepository
+                .findAll(PageRequest.of(from / size, size))
+                .stream()
                 .map(categoryMapper::toCategoryDto)
                 .collect(Collectors.toList());
-        return listCategoryDto;
     }
 
     @Override

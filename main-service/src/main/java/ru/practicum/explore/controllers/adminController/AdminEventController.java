@@ -25,7 +25,7 @@ public class AdminEventController {
     }
 
     @GetMapping("/events")
-    public Collection<EventFullDto> getAllEvents(@RequestParam List<Long> users,
+    public Collection<EventFullDto> getAllEventsAdmin(@RequestParam List<Long> users,
                                                  @RequestParam List<Status> states,
                                                  @RequestParam List<Long> categories,
                                                  @RequestParam String rangeStart,
@@ -42,7 +42,7 @@ public class AdminEventController {
                 "size", size
         );
         log.info("Поиск событийAdmin AdminEventController.getAllEvents parameters = {}", parameters);
-        return eventService.getAllEvents(parameters);
+        return eventService.getAllEventsAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PutMapping("/{eventId}")

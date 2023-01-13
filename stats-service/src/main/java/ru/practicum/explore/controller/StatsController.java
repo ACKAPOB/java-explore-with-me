@@ -18,17 +18,11 @@ public class StatsController {
         this.statsService = statsService;
     }
 
-    /*
-    Метод контроллера по сохранению статистики
-    */
     @PostMapping("/hit")
     public EndpointHit save(@RequestBody EndpointHit endpointHit) {
         return statsService.save(endpointHit);
     }
 
-    /*
-    Метод контроллера по получению статистики
-    */
     @GetMapping("/stats")
     public Collection<ViewStats> getStats(@RequestParam String start,
                                           @RequestParam String end,

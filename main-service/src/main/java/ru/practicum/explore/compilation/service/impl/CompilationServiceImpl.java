@@ -1,13 +1,13 @@
 package ru.practicum.explore.compilation.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.service.CompilationService;
 import ru.practicum.explore.event.dto.EventShortDto;
+import ru.practicum.explore.exception.ObjectNotFoundException;
 import ru.practicum.explore.exception.errors.validate.ObjectValidate;
 import ru.practicum.explore.compilation.mapper.CompilationMapper;
 import ru.practicum.explore.event.mapper.EventMapper;
@@ -22,50 +22,47 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
     private final ObjectValidate objectValidate;
 
-    @Autowired
-    public CompilationServiceImpl(CompilationRepository compilationRepository, CompilationMapper compilationMapper,
-                                  EventMapper eventMapper, ObjectValidate objectValidate) {
-        this.compilationRepository = compilationRepository;
-        this.compilationMapper = compilationMapper;
-        this.eventMapper = eventMapper;
-        this.objectValidate = objectValidate;
-    }
-
     @Override
-    public Collection<CompilationDto> getCompilationAll(Boolean pinned, Integer from, Integer size) {
-        log.info("Получение подборок событий CompilationServiceImpl.getAll");
-        Pageable pageable = PageRequest.of(from / size, size);
+    public List<CompilationDto> getCompilationAll(Boolean pinned, Integer from, Integer size) {
+        log.info("Получение подборок событий CompilationServiceImplgetCompilationAll");
         Collection<Compilation> compilationCollection =
-                compilationRepository.findAllByPinnedOrderById(pinned, pageable);
-        Collection<CompilationDto> compilationDtoCollection = new ArrayList<>();
+                compilationRepository.findAllByPinnedOrderById(pinned, PageRequest.of(from / size, size));
+        List<CompilationDto> compilationDto = new ArrayList<>();
         if (!compilationCollection.isEmpty()) {
-            for (Compilation c : compilationCollection) {
+            for (Compilation compilation : compilationCollection) {
                 List<EventShortDto> eventShortDtoList = new ArrayList<>();
-                if (c.getEvents().size() != 0) {
-                    eventShortDtoList = c.getEvents().stream()
+                if (compilation.getEvents().size() != 0) {
+                    eventShortDtoList = compilation
+                            .getEvents()
+                            .stream()
                             .map(eventMapper::toEventShortDto)
                             .collect(Collectors.toList());
                 }
-                compilationDtoCollection.add(compilationMapper.toCompilationDto(c, eventShortDtoList));
+                compilationDto.add(compilationMapper.toCompilationDto(compilation, eventShortDtoList));
             }
         }
-        return compilationDtoCollection;
+        return compilationDto;
     }
 
     @Override
     public Optional<CompilationDto> getCompilation(Long compId) {
         log.info("Получение подборки событий по его id CompilationServiceImpl.getCompilation compId={}", compId);
         objectValidate.validateCompilation(compId);
-        Compilation compilation = compilationRepository.findById(compId).get();
+        Compilation compilation = compilationRepository
+                .findById(compId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Compilation not found id = %s", compId)));
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
         if (compilation.getEvents().size() != 0) {
-            eventShortDtoList = compilation.getEvents().stream()
+            eventShortDtoList = compilation
+                    .getEvents()
+                    .stream()
                     .map(eventMapper::toEventShortDto)
                     .collect(Collectors.toList());
         }

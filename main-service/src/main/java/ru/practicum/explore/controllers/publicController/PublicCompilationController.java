@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.service.CompilationService;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,9 +21,9 @@ public class PublicCompilationController {
     }
 
     @GetMapping
-    public Collection<CompilationDto> getCompilationAll(@RequestParam Boolean pinned,
-                                             @RequestParam(defaultValue = "0") Integer from,
-                                             @RequestParam(defaultValue = "10") Integer size) {
+    public List<CompilationDto> getCompilationAll(@RequestParam Boolean pinned,
+                                                  @RequestParam(defaultValue = "0") Integer from,
+                                                  @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение подборок событий PublicCompilationController.getAll");
         return compilationService.getCompilationAll(pinned, from, size);
     }
