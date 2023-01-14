@@ -13,9 +13,6 @@ import java.util.List;
 public class CompilationMapperImpl implements CompilationMapper {
     @Override
     public Compilation toCompilation(NewCompilationDto newCompilationDto, List<Event> events) {
-        if (newCompilationDto == null) {
-            return null;
-        }
         return Compilation.builder()
                 .id(newCompilationDto.getId())
                 .events(events)
@@ -26,9 +23,6 @@ public class CompilationMapperImpl implements CompilationMapper {
 
     @Override
     public CompilationDto toCompilationDto(Compilation compilation, List<EventShortDto> list) {
-        if (compilation == null) {
-            return null;
-        }
         return CompilationDto.builder()
                 .id(compilation.getId())
                 .events(list)
