@@ -1,15 +1,12 @@
-package ru.practicum.explore.user.service;
+package ru.practicum.explore.event.service;
 
-import ru.practicum.explore.event.dto.EventFullDto;
-import ru.practicum.explore.event.dto.EventShortDto;
-import ru.practicum.explore.event.dto.NewEventDto;
-import ru.practicum.explore.event.dto.UpdateEventRequest;
+import ru.practicum.explore.event.dto.*;
 import ru.practicum.explore.request.dto.RequestDto;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface UserService {
+public interface PrivatEventService {
 
     Collection<EventShortDto> findAllEventsByUserId(Long userId, Integer from, Integer size);
 

@@ -11,7 +11,7 @@ import ru.practicum.explore.request.dto.RequestDto;
 import ru.practicum.explore.request.mapper.model.Request;
 import ru.practicum.explore.request.model.StatusRequest;
 import ru.practicum.explore.request.repository.RequestRepository;
-import ru.practicum.explore.request.service.RequestService;
+import ru.practicum.explore.request.service.PrivateRequestService;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.UserRepository;
 import ru.practicum.explore.request.mapper.RequestMapper;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 
-public class RequestServiceImpl implements RequestService {
+public class PrivatePrivateRequestServiceImpl implements PrivateRequestService {
 
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
-    public RequestServiceImpl(RequestRepository requestRepository, EventRepository eventRepository, UserRepository userRepository) {
+    public PrivatePrivateRequestServiceImpl(RequestRepository requestRepository, EventRepository eventRepository, UserRepository userRepository) {
         this.requestRepository = requestRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
@@ -38,6 +38,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<RequestDto> getRequestsByUser(Long userId) {
+        log.info("Получение информации о заявках текущего пользователя на участие в чужих событиях. userId = {} " +
+                "PrivateRequestServiceImpl.getRequestsByUser", userId);
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s", userId)));
@@ -48,6 +50,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestDto postRequestUser(Long userId, Long eventId) {
+        log.info("Добавление запроса от текущего пользователя на участие в событии userId = {} and eventId = {} " +
+                "PrivateRequestServiceImpl.postRequestUser", userId, eventId);
         if (eventRepository.findById(eventId).isEmpty()) {
             throw new ObjectNotFoundException(String.format("postRequestUser Event not found id = %s", userId));
         }
@@ -88,12 +92,14 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestDto cancelRequestByUser(Long userId, Long requestId) {
+        log.info("Отмена своего запроса на участие в событии userId = {}, requestId = {} " +
+                "PrivateRequestServiceImpl.cancelRequestByUser", userId, requestId);
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("cancelRequestByUser User not found id = %s", userId)));
 
         if (!Objects.equals(requestRepository.findById(requestId).get().getRequester().getId(), userId)) {
-            throw new ErrorRequestException("cancelRequestByUser Sorry you no Event initiator");
+            throw new ErrorRequestException("cancelRequestByUser  you no Event initiator");
         }
         Request request = requestRepository
                 .findById(requestId)

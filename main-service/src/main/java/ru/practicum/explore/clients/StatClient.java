@@ -8,15 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.explore.clients.BaseClient;
-import ru.practicum.explore.clients.EndpointHit;
+
 
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Slf4j
-public class StatClient extends BaseClient {
+public class StatClient extends BaseClient{
 
     @Autowired
     public StatClient(@Value("${stat-service.url}") String serverUrl, RestTemplateBuilder builder) {

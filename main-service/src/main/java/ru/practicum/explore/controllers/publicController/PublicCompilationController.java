@@ -1,10 +1,9 @@
 package ru.practicum.explore.controllers.publicController;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.compilation.dto.CompilationDto;
-import ru.practicum.explore.compilation.service.CompilationService;
+import ru.practicum.explore.compilation.service.impl.PublicCompilationServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +12,10 @@ import java.util.Optional;
 @RequestMapping("/compilations")
 @Slf4j
 public class PublicCompilationController {
-    private final CompilationService compilationService;
+    private final PublicCompilationServiceImpl publicCompilationService;
 
-    @Autowired
-    public PublicCompilationController(CompilationService compilationService) {
-        this.compilationService = compilationService;
+    public PublicCompilationController(PublicCompilationServiceImpl publicCompilationService) {
+        this.publicCompilationService = publicCompilationService;
     }
 
     @GetMapping
@@ -25,12 +23,12 @@ public class PublicCompilationController {
                                                   @RequestParam(defaultValue = "0") Integer from,
                                                   @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение подборок событий PublicCompilationController.getAll");
-        return compilationService.getCompilationAll(pinned, from, size);
+        return publicCompilationService.getCompilationAll(pinned, from, size);
     }
 
     @GetMapping("/{compId}")
     public Optional<CompilationDto> getCompilation(@PathVariable Long compId) {
         log.info("Получение подборки событий по его id PublicCompilationController.getCompilation compId={}", compId);
-        return compilationService.getCompilation(compId);
+        return publicCompilationService.getCompilation(compId);
     }
 }

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.request.dto.RequestDto;
-import ru.practicum.explore.request.service.RequestService;
+import ru.practicum.explore.request.service.PrivateRequestService;
 
 import java.util.List;
 
@@ -12,13 +12,12 @@ import java.util.List;
 @RequestMapping("/users/{userId}/requests")
 @Slf4j
 public class PrivateUserRequestController {
-    private final RequestService requestService;
+    private final PrivateRequestService requestService;
 
     @Autowired
-    public PrivateUserRequestController(RequestService requestService) {
+    public PrivateUserRequestController(PrivateRequestService requestService) {
         this.requestService = requestService;
     }
-
 
     @GetMapping
     public List<RequestDto> getRequestsByUser(@PathVariable Long userId) {
@@ -36,8 +35,10 @@ public class PrivateUserRequestController {
 
     @PatchMapping("/{requestId}/cancel")
     public RequestDto cancelRequestByUser(@PathVariable Long userId, @PathVariable Long requestId) {
-        log.info("User patch requestId={} by eserId={}", userId, requestId);
+        log.info("Отмена своего запроса на участие в событии userId = {}, requestId = {} " +
+                "PrivateUserRequestController.cancelRequestByUser", userId, requestId);
         return requestService.cancelRequestByUser(userId, requestId);
     }
 
 }
+

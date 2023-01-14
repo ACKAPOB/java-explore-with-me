@@ -5,7 +5,8 @@ import ru.practicum.explore.category.dto.CategoryDto;
 import java.util.List;
 import java.util.Optional;
 
-public interface CategoryService {
+public interface PublicCategoryService {
+
     List<CategoryDto> findAllCategory(Integer from, Integer size);
 
     Optional<CategoryDto> getCategoryById(Long catId);

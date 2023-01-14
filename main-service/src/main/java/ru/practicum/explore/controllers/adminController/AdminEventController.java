@@ -1,26 +1,23 @@
 package ru.practicum.explore.controllers.adminController;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.model.Status;
-import ru.practicum.explore.event.service.EventService;
+import ru.practicum.explore.event.service.impl.AdminEventServiceImpl;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/events")
 @Slf4j
 public class AdminEventController {
 
-    private final EventService eventService;
+    private final AdminEventServiceImpl eventService;
 
-    @Autowired
-    public AdminEventController(EventService eventService) {
+    public AdminEventController(AdminEventServiceImpl eventService) {
         this.eventService = eventService;
     }
 
@@ -32,16 +29,7 @@ public class AdminEventController {
                                                  @RequestParam String rangeEnd,
                                                  @RequestParam(defaultValue = "0") Integer from,
                                                  @RequestParam(defaultValue = "10") Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "users", users,
-                "states", states,
-                "categories", categories,
-                "rangeStart", rangeStart,
-                "rangeEnd", rangeEnd,
-                "from", from,
-                "size", size
-        );
-        log.info("Поиск событийAdmin AdminEventController.getAllEvents parameters = {}", parameters);
+        log.info("Поиск событий AdminEventController.getAllEvents users = {}", users);
         return eventService.getAllEventsAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 

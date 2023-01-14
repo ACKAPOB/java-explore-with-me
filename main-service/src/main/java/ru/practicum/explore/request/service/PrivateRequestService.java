@@ -4,7 +4,7 @@ import ru.practicum.explore.request.dto.RequestDto;
 
 import java.util.List;
 
-public interface RequestService {
+public interface PrivateRequestService {
     List<RequestDto> getRequestsByUser(Long userId);
 
     RequestDto postRequestUser(Long userId, Long eventId);

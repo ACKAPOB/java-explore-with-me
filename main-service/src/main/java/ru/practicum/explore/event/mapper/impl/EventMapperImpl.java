@@ -1,12 +1,13 @@
 package ru.practicum.explore.event.mapper.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.clients.StatClient;
 import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.event.dto.*;
 import ru.practicum.explore.event.mapper.EventMapper;
+import ru.practicum.explore.feature.comment.mapper.CommentMapper;
+import ru.practicum.explore.feature.comment.repository.CommentRepository;
 import ru.practicum.explore.user.mapper.UserMapper;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.model.Event;
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class EventMapperImpl implements EventMapper {
@@ -27,39 +29,26 @@ public class EventMapperImpl implements EventMapper {
     private final UserMapper userMapper;
     private final StatClient statClient;
     private final RequestRepository requestRepository;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
-    @Autowired
     public EventMapperImpl(CategoryMapper categoryMapper, UserMapper userMapper, StatClient statClient,
-                           RequestRepository requestRepository) {
+                           RequestRepository requestRepository, CommentRepository commentRepository,
+                           CommentMapper commentMapper) {
         this.categoryMapper = categoryMapper;
         this.userMapper = userMapper;
         this.statClient = statClient;
         this.requestRepository = requestRepository;
-    }
-
-    public Integer getViews(Long id) {
-        String start = LocalDateTime.of(2000, 1, 1, 0, 0, 0)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String end = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        ResponseEntity<Object> response = statClient.getStats(start, end, List.of("/events/" + id), false);
-        List<LinkedHashMap> collection = (List<LinkedHashMap>) response.getBody();
-        if (!collection.isEmpty()) {
-            Integer views = (Integer) collection.get(0).get("hits");
-            return views;
-        }
-        return 0;
+        this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     public Integer getConfirmedRequests(Long id) {
-        Integer limitParticipant = requestRepository.countByEvent_IdAndStatus(id, StatusRequest.CONFIRMED);
-        return limitParticipant;
+        return requestRepository.countByEvent_IdAndStatus(id, StatusRequest.CONFIRMED);
     }
 
     @Override
     public EventFullDto toEventFullDto(Event event) {
-        if (event == null) {
-            return null;
-        }
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -79,6 +68,10 @@ public class EventMapperImpl implements EventMapper {
                 .state(event.getState())
                 .title(event.getTitle())
                 .views(getViews(event.getId()))
+                .comments(commentRepository.findAllByEventOrderByCreated(event)
+                        .stream()
+                        .map(commentMapper::toCommentDto)
+                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -94,15 +87,16 @@ public class EventMapperImpl implements EventMapper {
                 .paid(event.getPaid())
                 .title(event.getTitle())
                 .views(getViews(event.getId()))
+                .comments(commentRepository.findAllByEventOrderByCreated(event)
+                        .stream()
+                        .map(commentMapper::toCommentDto)
+                        .collect(Collectors.toList()))
                 .build();
     }
 
     @Override
     public Event toEvent(NewEventDto newEventDto, User user,
                          Location location, Category category, LocalDateTime eventDate) {
-        if (newEventDto == null) {
-            return null;
-        }
         return Event.builder()
                 .annotation(newEventDto.getAnnotation())
                 .category(category)
@@ -120,20 +114,25 @@ public class EventMapperImpl implements EventMapper {
 
     @Override
     public void updateEventFromNewEventDto(UpdateEventRequest newEventDto, Event event) {
-        if (newEventDto == null) {
-            return;
-        }
         Optional.ofNullable(newEventDto.getAnnotation()).ifPresent(event::setAnnotation);
         Optional.ofNullable(newEventDto.getDescription()).ifPresent(event::setDescription);
-
-        if (newEventDto.getEventDate() != null) {
+        if (newEventDto.getEventDate() != null)
             event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate(),
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        }
         Optional.ofNullable(newEventDto.getPaid()).ifPresent(event::setPaid);
         Optional.ofNullable(newEventDto.getParticipantLimit()).ifPresent(event::setParticipantLimit);
         Optional.ofNullable(newEventDto.getTitle()).ifPresent(event::setTitle);
+    }
 
+    public Integer getViews(Long id) {
+        LocalDateTime starts = LocalDateTime.MIN;
+        String end = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        ResponseEntity<Object> response = statClient.getStats(starts.toString(), end, List.of("/events/" + id), false);
+        List<LinkedHashMap> collection = (List<LinkedHashMap>) response.getBody();
+        if (!collection.isEmpty()) {
+            return (Integer) collection.get(0).get("hits");
+        }
+        return 0;
     }
 
 }

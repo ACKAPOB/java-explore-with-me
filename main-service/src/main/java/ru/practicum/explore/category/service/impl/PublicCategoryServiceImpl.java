@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.dto.CategoryDto;
-import ru.practicum.explore.category.service.CategoryService;
+import ru.practicum.explore.category.service.PublicCategoryService;
 import ru.practicum.explore.exception.ObjectNotFoundException;
 import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CategoryServiceImpl implements CategoryService {
+public class PublicCategoryServiceImpl implements PublicCategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
@@ -40,4 +40,5 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Category not found id = %s", catId)));
         return Optional.of(categoryMapper.toCategoryDto(category));
     }
+
 }
