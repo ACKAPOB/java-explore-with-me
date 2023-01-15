@@ -6,6 +6,8 @@ import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.NewCategoryDto;
 import ru.practicum.explore.category.service.impl.AdminCategoryServiceImpl;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/admin/categories")
 @Slf4j
@@ -17,13 +19,13 @@ public class AdminCategoryController {
     }
 
     @PatchMapping
-    public CategoryDto patchCategory(@RequestBody CategoryDto categoryDto) {
+    public CategoryDto patchCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Редактирование события AdminCategoryController.patchCategory categoryDto = {}", categoryDto);
         return adminCategoryService.patchCategory(categoryDto);
     }
 
     @PostMapping
-    public CategoryDto postCategory(@RequestBody NewCategoryDto newCategoryDto) {
+    public CategoryDto postCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         log.info("Добавление новой категории AdminCategoryController.postCategory newCategoryDto = {}", newCategoryDto);
         return adminCategoryService.postCategory(newCategoryDto);
     }

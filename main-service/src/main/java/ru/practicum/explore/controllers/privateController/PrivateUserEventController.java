@@ -9,6 +9,7 @@ import ru.practicum.explore.event.dto.UpdateEventRequest;
 import ru.practicum.explore.event.service.impl.PrivateEventServiceImpl;
 import ru.practicum.explore.request.dto.RequestDto;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,14 +35,14 @@ public class PrivateUserEventController {
 
     @PatchMapping
     public EventFullDto patchEventByUser(@PathVariable Long userId,
-                                         @RequestBody UpdateEventRequest updateEventRequest) {
+                                         @RequestBody @Valid  UpdateEventRequest updateEventRequest) {
         log.info("Изменение события добавленного текущим пользователем userId = {} " +
                 "PrivateUserEventController.patchEventByUser", userId);
         return eventService.patchEventByUser(userId, updateEventRequest);
     }
 
     @PostMapping
-    public EventFullDto postEvent(@PathVariable Long userId, @RequestBody NewEventDto newEventDto) {
+    public EventFullDto postEvent(@PathVariable Long userId, @Valid @RequestBody NewEventDto newEventDto) {
         log.info("Добавление нового события userId = {} PrivateUserEventController.postEvent", userId);
         return eventService.postEvent(userId, newEventDto);
     }

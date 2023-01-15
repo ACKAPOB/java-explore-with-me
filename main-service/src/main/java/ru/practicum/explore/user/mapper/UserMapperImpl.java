@@ -11,9 +11,6 @@ import ru.practicum.explore.user.model.User;
 public class UserMapperImpl implements UserMapper {
     @Override
     public UserDto toUserDto(User user) {
-        if (user == null) {
-            return null;
-        }
         UserDtoBuilder userDto = UserDto.builder();
         userDto.id(user.getId());
         userDto.name(user.getName());
@@ -31,6 +28,7 @@ public class UserMapperImpl implements UserMapper {
                 .name(newUserRequest.getName())
                 .build();
     }
+
 
     @Override
     public UserShortDto toUserShortDto(User user) {

@@ -33,6 +33,6 @@ public class EventFullDto {
     private Boolean requestModeration;
     private Status state;
     private String title;
-    private Integer views;
+    private Long views;
     private List<CommentDto> comments;
 }

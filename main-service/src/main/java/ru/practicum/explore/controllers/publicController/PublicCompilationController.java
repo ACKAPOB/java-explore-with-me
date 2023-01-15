@@ -19,7 +19,7 @@ public class PublicCompilationController {
     }
 
     @GetMapping
-    public List<CompilationDto> getCompilationAll(@RequestParam Boolean pinned,
+    public List<CompilationDto> getCompilationAll(@RequestParam(defaultValue = "false") Boolean pinned,
                                                   @RequestParam(defaultValue = "0") Integer from,
                                                   @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение подборок событий PublicCompilationController.getAll");

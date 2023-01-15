@@ -1,14 +1,15 @@
 package ru.practicum.explore.service;
 
-import ru.practicum.explore.dto.EndpointHit;
-import ru.practicum.explore.dto.ViewStats;
+import org.springframework.stereotype.Service;
+import ru.practicum.explore.dto.ViewStatsDto;
+import ru.practicum.explore.dto.EndpointHitDto;
 
-import java.util.Collection;
 import java.util.List;
 
+@Service
 public interface StatsService {
 
-    EndpointHit save(EndpointHit endpointHit);
+    void save(EndpointHitDto endpointHitDto);
 
-    Collection<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique);
+    List<ViewStatsDto> getViews(String start, String end, Boolean unique, List<String> uris);
 }

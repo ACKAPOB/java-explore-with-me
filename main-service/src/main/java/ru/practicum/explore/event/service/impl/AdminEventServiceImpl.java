@@ -1,10 +1,12 @@
 package ru.practicum.explore.event.service.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
@@ -27,25 +29,19 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@AllArgsConstructor
+@Transactional(readOnly = true)
 public class AdminEventServiceImpl implements AdminEventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final CategoryRepository categoryRepository;
 
-    public AdminEventServiceImpl(EventRepository eventRepository, EventMapper eventMapper, CategoryRepository categoryRepository) {
-        this.eventRepository = eventRepository;
-        this.eventMapper = eventMapper;
-        this.categoryRepository = categoryRepository;
-    }
-
     @Override
-    public List<EventFullDto> getAllEventsAdmin(List<Long> users, List<Status> states, List<Long> categories,
-                                                String rangeStart, String rangeEnd, Integer from, Integer size) {
+    public List<EventFullDto> getAllEvents(List<Long> users, List<Status> states, List<Long> categories,
+                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         log.info("Поиск событийAdmin AdminEventServiceImpl.getAllEvents users = {}", users);
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").descending());
-        LocalDateTime start = LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime end = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        return eventRepository.getAllEvents(users, states, categories, start, end, pageable)
+        return eventRepository.getAllEvents(users, states, categories, rangeStart, rangeEnd, pageable)
                 .stream()
                 .map(eventMapper::toEventFullDto)
                 .collect(Collectors.toList());
@@ -83,12 +79,13 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto approvePublishEvent(Long eventId) {
-        log.info(" Публикация события eventId = {} AdminEventServiceImpl.approvePublishEvent", eventId);
+        log.info("Публикация события eventId = {} AdminEventServiceImpl.approvePublishEvent", eventId);
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId)));
         event.setState(Status.PUBLISHED);
         eventRepository.save(event);
+        log.info("Проверка  Status.PUBLISHED = {} AdminEventServiceImpl.approvePublishEvent", event.getState());
         return eventMapper.toEventFullDto(event);
     }
 

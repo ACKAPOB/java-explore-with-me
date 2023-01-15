@@ -1,12 +1,14 @@
-package ru.practicum.explore.clients;
+package ru.practicum.explore.dto;
 
 import lombok.*;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class ViewStats {
+@Builder
+public class ViewStatsDto {
     private String app;
     private String uri;
     private long hits;

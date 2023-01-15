@@ -1,33 +1,33 @@
 package ru.practicum.explore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explore.dto.EndpointHit;
-import ru.practicum.explore.dto.ViewStats;
+import ru.practicum.explore.dto.ViewStatsDto;
+import ru.practicum.explore.dto.EndpointHitDto;
 import ru.practicum.explore.service.StatsService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
+@RequestMapping("/")
+@Slf4j
 public class StatsController {
-    private final StatsService statsService;
+    private final StatsService service;
 
-    @Autowired
-    public StatsController(StatsService statsService) {
-        this.statsService = statsService;
+    @PostMapping("hit")
+    public void save(@RequestBody EndpointHitDto endpointHitDto) {
+        log.info("Получен запрос StatsController.save");
+        service.save(endpointHitDto);
     }
 
-    @PostMapping("/hit")
-    public EndpointHit save(@RequestBody EndpointHit endpointHit) {
-        return statsService.save(endpointHit);
-    }
-
-    @GetMapping("/stats")
-    public Collection<ViewStats> getStats(@RequestParam String start,
-                                          @RequestParam String end,
-                                          @RequestParam List<String> uris,
-                                          @RequestParam(defaultValue = "false") Boolean unique) {
-        return statsService.getStats(start, end, uris, unique);
+    @GetMapping("stats")
+    public List<ViewStatsDto> getViews(@RequestParam String start,
+                                       @RequestParam String end,
+                                       @RequestParam(defaultValue = "false") Boolean unique,
+                                       @RequestParam(required = false) List<String> uris) {
+        log.info("Получен запрос StatsController.getViews");
+        return service.getViews(start, end, unique, uris);
     }
 }

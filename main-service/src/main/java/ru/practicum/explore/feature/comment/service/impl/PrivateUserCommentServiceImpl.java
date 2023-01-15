@@ -1,8 +1,10 @@
 package ru.practicum.explore.feature.comment.service.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.Status;
 import ru.practicum.explore.event.repository.EventRepository;
@@ -22,20 +24,14 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@AllArgsConstructor
+@Transactional(readOnly = true)
 class PrivateUserCommentServiceImpl implements PrivateUserCommentService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
-
-    PrivateUserCommentServiceImpl(EventRepository eventRepository, UserRepository userRepository,
-                                  CommentMapper commentMapper, CommentRepository commentRepository) {
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-        this.commentMapper = commentMapper;
-        this.commentRepository = commentRepository;
-    }
 
     @Override
     public CommentDto postComment(Long userId, Long eventId, CommentDto commentDto) {

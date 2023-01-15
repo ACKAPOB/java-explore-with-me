@@ -42,5 +42,8 @@ public class Event {
     private Boolean requestModeration;
     private String title;
     @Enumerated(EnumType.STRING)
+    @Column(name = "state")
     private Status state;
+    @Column(name = "views")
+    private Long views;
 }

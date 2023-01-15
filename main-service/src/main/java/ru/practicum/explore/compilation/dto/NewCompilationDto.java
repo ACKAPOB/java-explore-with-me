@@ -1,19 +1,17 @@
 package ru.practicum.explore.compilation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class NewCompilationDto {
-    private Long id;
     private List<Long> events;
     private Boolean pinned;
+    @NotNull
     private String title;
 }

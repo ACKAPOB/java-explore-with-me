@@ -1,12 +1,15 @@
 package ru.practicum.explore.request.service.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.Status;
 import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.exception.ErrorRequestException;
 import ru.practicum.explore.exception.ObjectNotFoundException;
+import ru.practicum.explore.exception.ValidationException;
 import ru.practicum.explore.request.dto.RequestDto;
 import ru.practicum.explore.request.mapper.model.Request;
 import ru.practicum.explore.request.model.StatusRequest;
@@ -23,18 +26,13 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-
-public class PrivatePrivateRequestServiceImpl implements PrivateRequestService {
+@AllArgsConstructor
+@Transactional(readOnly = true)
+public class PrivateRequestServiceImpl implements PrivateRequestService {
 
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-
-    public PrivatePrivateRequestServiceImpl(RequestRepository requestRepository, EventRepository eventRepository, UserRepository userRepository) {
-        this.requestRepository = requestRepository;
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public List<RequestDto> getRequestsByUser(Long userId) {
@@ -49,11 +47,12 @@ public class PrivatePrivateRequestServiceImpl implements PrivateRequestService {
     }
 
     @Override
-    public RequestDto postRequestUser(Long userId, Long eventId) {
+    public RequestDto postRequest(Long userId, Long eventId) {
         log.info("Добавление запроса от текущего пользователя на участие в событии userId = {} and eventId = {} " +
                 "PrivateRequestServiceImpl.postRequestUser", userId, eventId);
-        if (eventRepository.findById(eventId).isEmpty()) {
-            throw new ObjectNotFoundException(String.format("postRequestUser Event not found id = %s", userId));
+        if (eventId == null) {
+            log.info("Добавление запроса от текущего eventId == null");
+            throw new ValidationException(String.format("postRequestUser Event not found id = %s", userId));
         }
         if (Objects.equals(eventRepository.findById(eventId).get().getInitiator().getId(), userId)) {
             throw new ErrorRequestException("postRequestUser Sorry you no Event initiator");

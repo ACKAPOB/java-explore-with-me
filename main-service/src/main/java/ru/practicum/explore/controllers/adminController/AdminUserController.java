@@ -6,6 +6,7 @@ import ru.practicum.explore.user.dto.NewUserRequest;
 import ru.practicum.explore.user.dto.UserDto;
 import ru.practicum.explore.user.service.AdminUserService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class AdminUserController {
     }
 
     @PostMapping
-    public UserDto postUser(@RequestBody NewUserRequest newUserRequest) {
+    public UserDto postUser(@Valid @RequestBody NewUserRequest newUserRequest) {
         log.info("Добавление нового пользователя newUserRequest = {} AdminUserController.postUser", newUserRequest);
         return adminUserService.postUser(newUserRequest);
     }

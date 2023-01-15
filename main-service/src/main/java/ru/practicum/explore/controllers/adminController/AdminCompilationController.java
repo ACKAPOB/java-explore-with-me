@@ -6,6 +6,8 @@ import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.compilation.service.AdminCompilationService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/admin/compilations")
 @Slf4j
@@ -17,7 +19,7 @@ public class AdminCompilationController {
     }
 
     @PostMapping
-    public CompilationDto createCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+    public CompilationDto createCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
         log.info("обавление новой подборки newCompilationDto = {} " +
                 "AdminCompilationController. createCompilation",newCompilationDto);
         return adminCompilationService.createCompilation(newCompilationDto);
@@ -31,7 +33,7 @@ public class AdminCompilationController {
 
     @DeleteMapping("/{compId}/events/{eventId}")
     public void deleteEventInCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
-        log.info("Удалить событие из подборки event eventId={}, compId={} " +
+        log.info("Удалить событие из подборки event eventId = {}, compId = {} " +
                 "AdminCompilationController.deleteEventInCompilation", eventId, compId);
         adminCompilationService.deleteEventInCompilation(compId, eventId);
     }

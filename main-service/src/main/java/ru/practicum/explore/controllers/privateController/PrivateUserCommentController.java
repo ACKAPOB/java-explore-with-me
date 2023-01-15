@@ -8,7 +8,7 @@ import ru.practicum.explore.feature.comment.service.PrivateUserCommentService;
 
 
 @RestController
-@RequestMapping("users/{userId}/")
+@RequestMapping("/users/{userId}")
 @Slf4j
 public class PrivateUserCommentController {
 
@@ -18,7 +18,7 @@ public class PrivateUserCommentController {
     // users/{userId}/comment/{comId}
     // users/{userId}/events/{eventId}/comment
 
-    @PostMapping("{events/{eventId}/comment")
+    @PostMapping("/events/{eventId}/comment")
     public CommentDto postComment(@PathVariable Long userId,
                                     @PathVariable Long eventId,
                                     @RequestBody CommentDto commentDto) {
@@ -27,14 +27,14 @@ public class PrivateUserCommentController {
         return privateUserCommentService.postComment(userId, eventId, commentDto);
     }
 
-    @DeleteMapping("{userId}/comment/{comId}")
+    @DeleteMapping("/comment/{comId}")
     public void deleteComment(@PathVariable Long userId,
                               @PathVariable Long comId) {
         log.info("delete comment by userId={} and comId{}", userId, comId);
         privateUserCommentService.deleteComment(userId, comId);
     }
 
-    @PatchMapping("{userId}/events/{eventId}/comment")
+    @PatchMapping("/events/{eventId}/comment")
     public CommentDto patchComment(@PathVariable Long userId,
                                     @PathVariable Long eventId,
                                     @RequestBody UpdateComment updateComment) {

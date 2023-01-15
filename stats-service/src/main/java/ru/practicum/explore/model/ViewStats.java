@@ -1,9 +1,10 @@
-package ru.practicum.explore.clients;
+package ru.practicum.explore.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 public class ViewStats {

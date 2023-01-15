@@ -1,8 +1,10 @@
 package ru.practicum.explore.event.service.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
 import ru.practicum.explore.event.dto.*;
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@AllArgsConstructor
+@Transactional(readOnly = true)
 public class PrivateEventServiceImpl implements PrivatEventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
@@ -39,16 +43,6 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     private final LocationService locationService;
     private final RequestRepository requestRepository;
 
-    public PrivateEventServiceImpl(EventRepository eventRepository, EventMapper eventMapper,
-                                   CategoryRepository categoryRepository, UserRepository userRepository,
-                                   LocationService locationService, RequestRepository requestRepository) {
-        this.eventRepository = eventRepository;
-        this.eventMapper = eventMapper;
-        this.categoryRepository = categoryRepository;
-        this.userRepository = userRepository;
-        this.locationService = locationService;
-        this.requestRepository = requestRepository;
-    }
 
     @Override
     public Collection<EventShortDto> findAllEventsByUserId(Long userId, Integer from, Integer size) {

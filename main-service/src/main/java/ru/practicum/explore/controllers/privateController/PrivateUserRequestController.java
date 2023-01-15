@@ -27,10 +27,11 @@ public class PrivateUserRequestController {
     }
 
     @PostMapping
-    public RequestDto postRequestUser(@PathVariable Long userId, @RequestParam Long eventId) {
+    public RequestDto postRequest(@PathVariable Long userId, @RequestParam Long eventId) {
         log.info("Добавление запроса от текущего пользователя на участие в событии userId = {} and eventId = {} " +
                 "PrivateUserRequestController.postRequestUser", userId, eventId);
-        return requestService.postRequestUser(userId, eventId);
+        return requestService.postRequest(userId, eventId);
+
     }
 
     @PatchMapping("/{requestId}/cancel")

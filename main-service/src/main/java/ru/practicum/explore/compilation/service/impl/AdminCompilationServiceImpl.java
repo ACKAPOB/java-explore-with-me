@@ -1,8 +1,8 @@
 package ru.practicum.explore.compilation.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.compilation.mapper.CompilationMapper;
@@ -18,36 +18,44 @@ import ru.practicum.explore.exception.ObjectNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @Slf4j
-@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AdminCompilationServiceImpl implements AdminCompilationService {
+
     private final CompilationRepository compilationRepository;
-    private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
+
+    public AdminCompilationServiceImpl(CompilationRepository compilationRepository,
+                                       EventMapper eventMapper,
+                                       EventRepository eventRepository) {
+        this.compilationRepository = compilationRepository;
+        this.eventMapper = eventMapper;
+        this.eventRepository = eventRepository;
+    }
 
     @Override
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
         log.info("обавление новой подборки newCompilationDto = {} " +
                 "AdminCompilationServiceImpl. createCompilation",newCompilationDto);
         List<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
-        Compilation compilation = compilationMapper.toCompilation(newCompilationDto, events);
+        Compilation compilation = CompilationMapper.toCompilation(newCompilationDto, events);
         compilationRepository.save(compilation);
         List<EventShortDto> eventShortDtoList = events
                 .stream()
                 .map(eventMapper::toEventShortDto)
                 .collect(Collectors.toList());
-        return compilationMapper.toCompilationDto(compilation, eventShortDtoList);
+        return CompilationMapper.toCompilationDto(compilation, eventShortDtoList);
     }
 
     @Override
     public void deleteCompilation(Long compId) {
         log.info("Удаление подборки id = {} AdminCompilationServiceImpl.deleteCompilation", compId);
         compilationRepository
-                .findById(compId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Compilation not found id = %s", compId)));
-        compilationRepository.deleteById(compId);
+                .delete(compilationRepository.findById(compId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Compilation not found id = %s", compId))));
     }
 
     @Override

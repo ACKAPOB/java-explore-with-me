@@ -1,54 +1,53 @@
 package ru.practicum.explore.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.dto.EndpointHit;
-import ru.practicum.explore.dto.ViewStats;
-import ru.practicum.explore.mapper.HitMapper;
-import ru.practicum.explore.model.Hit;
+import ru.practicum.explore.dto.ViewStatsDto;
+import ru.practicum.explore.dto.EndpointHitDto;
+import ru.practicum.explore.mapper.StatsMapper;
+import ru.practicum.explore.model.ViewStats;
 import ru.practicum.explore.repository.StatsRepository;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class StatsServiceImpl implements StatsService {
     private final StatsRepository statsRepository;
-    private final HitMapper hitMapper;
 
-    public StatsServiceImpl(StatsRepository statsRepository, HitMapper hitMapper) {
-        this.statsRepository = statsRepository;
-        this.hitMapper = hitMapper;
+    @Override
+    public void save(EndpointHitDto endpointHitDto) {
+        statsRepository.save(StatsMapper.toEndpointHit(endpointHitDto));
     }
 
     @Override
-    public EndpointHit save(EndpointHit endpointHit) {
-        Hit hit = hitMapper.toHit(endpointHit);
-        return hitMapper.toEndpointHit(statsRepository.save(hit));
-    }
-
-    @Override
-    public Collection<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique) {
-        LocalDateTime startTime = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime endTime = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Collection<ViewStats> list = new ArrayList<>();
-        if (uris == null) {
-            uris = statsRepository.findAllByTime(startTime, endTime).stream().distinct().collect(Collectors.toList());
-        }
-        List<Hit> hits;
-        for (String uri : uris) {
-            if (uri.contains("[")) {
-                hits = statsRepository.findAllByUri(uri.substring(1, uri.length() - 1), startTime, endTime);
+    public List<ViewStatsDto> getViews(String start, String end, Boolean unique, List<String> uris) {
+        List<ViewStats> stats;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime decodedStartTime = LocalDateTime.parse(URLDecoder.decode(start, StandardCharsets.UTF_8), formatter);
+        LocalDateTime decodedEndTime = LocalDateTime.parse(URLDecoder.decode(end, StandardCharsets.UTF_8), formatter);
+        if (Objects.isNull(uris) || uris.isEmpty()) {
+            if (unique) {
+                stats = statsRepository.findAllUnique(decodedStartTime, decodedEndTime);
             } else {
-                hits = statsRepository.findAllByUri(uri, startTime, endTime);
+                stats = statsRepository.findAll(decodedStartTime, decodedEndTime);
             }
-            if (hits.size() > 0) {
-                list.add(hitMapper.toViewStats(hits));
+        } else {
+            if (unique) {
+                stats = statsRepository.findAllByUrisUnique(decodedStartTime, decodedEndTime, uris);
+            } else {
+                stats = statsRepository.findAllByUris(decodedStartTime, decodedEndTime, uris);
             }
         }
-        return list;
+        return stats.stream()
+                .map(StatsMapper::toViewStatsDto)
+                .collect(Collectors.toList());
     }
 }
