@@ -26,7 +26,7 @@ public class StatsClient extends BaseClient {
     private String app;
 
     @Autowired
-    public StatsClient(@Value("${stats.server-url}") String url, ObjectMapper om) {
+    public StatsClient(@Value("${stats-server.url}") String url, ObjectMapper om) {
         super(url);
         this.om = om;
     }

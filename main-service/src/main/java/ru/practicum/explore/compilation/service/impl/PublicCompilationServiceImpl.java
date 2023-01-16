@@ -32,7 +32,7 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
     public List<CompilationDto> getCompilationAll(Boolean pinned, Integer from, Integer size) {
         log.info("Получение подборок событий PublicCompilationServiceImpl.getCompilationAll");
         Collection<Compilation> compilationCollection =
-                compilationRepository.findAllByPinnedOrderById(pinned, PageRequest.of(from / size, size));
+                compilationRepository.findAllByPinned(pinned, PageRequest.of(from / size, size));
         List<CompilationDto> compilationDto = new ArrayList<>();
         if (!compilationCollection.isEmpty()) {
             for (Compilation compilation : compilationCollection) {
