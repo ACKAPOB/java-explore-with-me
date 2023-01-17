@@ -3,7 +3,6 @@ package ru.practicum.explore.request.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.Status;
 import ru.practicum.explore.event.repository.EventRepository;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Transactional(readOnly = true)
 public class PrivateRequestServiceImpl implements PrivateRequestService {
 
     private final RequestRepository requestRepository;

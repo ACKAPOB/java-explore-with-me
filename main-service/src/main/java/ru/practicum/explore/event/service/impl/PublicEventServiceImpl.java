@@ -40,15 +40,18 @@ public class PublicEventServiceImpl implements PublicEventService {
                                            Integer size, HttpServletRequest request) {
         log.info("Получение событий с возможностью фильтрации PublicEventServiceImpl.getAllEvent text = {}", text);
         statsClient.save(request);
-        Pageable pageSorted = PageRequest.of(from, size, Sort.by(sort.toString()).descending());
-
-        Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").descending());
-        List<EventShortDto> listEvent = eventRepository
-                .getAllEventsByParameters(text, categories, paid, rangeStart, rangeEnd, pageSorted)
+        String sorted;
+        if (sort.equals(EventSort.EVENT_DATE)) {
+            sorted = "eventDate";
+        } else {
+            sorted = "views";
+        }
+                    Pageable page = PageRequest.of(from, size, Sort.by(sorted).descending());
+        return eventRepository
+                .findAllEventsByAnnotationAndDescriptionAndCategoryAndPaidAndEventDateOrderById(text, categories, paid, rangeStart, rangeEnd, page)
                 .stream()
                 .map(eventMapper::toEventShortDto)
                 .collect(Collectors.toList());
-        return listEvent;
     }
 
     @Override
@@ -67,13 +70,3 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId))));
     }
 }
-/*        BooleanExpression predicate = getPredicate(text, categories, paid, rangeStart, rangeEnd, onlyAvailable);
-        if (eventSort.equals(EventSort.EVENT_DATE)) {
-            Pageable pageSortedByDate = PageRequest.of(from, size, Sort.by("eventDate").descending());
-            return EventDtoMapper.toEventShortDto(eventRepository.findAll(predicate, pageSortedByDate).getContent());
-        } else {
-            Pageable pageSortedByViews = PageRequest.of(from, size, Sort.by("views").descending());
-            return EventDtoMapper.toEventShortDto(eventRepository.findAll(predicate, pageSortedByViews).getContent());
-        }
-
- */

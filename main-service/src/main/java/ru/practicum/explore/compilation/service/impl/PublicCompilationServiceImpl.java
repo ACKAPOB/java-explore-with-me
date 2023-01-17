@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.mapper.CompilationMapper;
 import ru.practicum.explore.compilation.model.Compilation;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Transactional(readOnly = true)
 public class PublicCompilationServiceImpl implements PublicCompilationService {
     private final CompilationRepository compilationRepository;
     private final EventMapper eventMapper;

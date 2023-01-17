@@ -2,7 +2,6 @@ package ru.practicum.explore.compilation.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.compilation.mapper.CompilationMapper;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@Transactional(readOnly = true)
 public class AdminCompilationServiceImpl implements AdminCompilationService {
 
     private final CompilationRepository compilationRepository;
@@ -37,7 +35,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
-    @Transactional
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
         log.info("обавление новой подборки newCompilationDto = {} " +
                 "AdminCompilationServiceImpl. createCompilation",newCompilationDto);
@@ -52,7 +49,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
-    @Transactional
     public void deleteCompilation(Long compId) {
         log.info("Удаление подборки id = {} AdminCompilationServiceImpl.deleteCompilation", compId);
         compilationRepository
@@ -61,7 +57,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
-    @Transactional
     public void deleteEventInCompilation(Long compId, Long eventId) {
         log.info("Удалить событие из подборки event eventId = {}, compId = {} " +
                 "AdminCompilationServiceImpl.deleteEventInCompilation", eventId, compId);
@@ -79,7 +74,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
-    @Transactional
     public void addEventInCompilation(Long compId, Long eventId) {
         log.info("Добавить событие в подборку eventId = {} in compId id = {} " +
                 "AdminCompilationServiceImpl.addEventInCompilation", eventId, compId);
@@ -97,7 +91,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
-    @Transactional
     public void unpinCompilation(Long compId) {
         log.info("Открепить подборку на главной странице compId = {} " +
                 "AdminCompilationServiceImpl.unpinCompilation", compId);
@@ -110,7 +103,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     }
 
     @Override
-    @Transactional
     public void pinCompilation(Long compId) {
         log.info("Закрепить подборку на главной странице compId = {} " +
                 "AdminCompilationServiceImpl.pinCompilation", compId);

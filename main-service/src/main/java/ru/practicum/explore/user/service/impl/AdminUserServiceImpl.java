@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.exception.ConflictException;
 import ru.practicum.explore.exception.ObjectNotFoundException;
 import ru.practicum.explore.user.dto.NewUserRequest;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-@Transactional(readOnly = true)
 class AdminUserServiceImpl implements AdminUserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
