@@ -2,54 +2,46 @@ version: '3.1'
 services:
   stats-server:
     build: ./stats-service
-    container_name: stats-container
+    container_name: stats-service
     ports:
       - "9090:9090"
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
-      - POSTGRES_DB=stats
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:7432/stats
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=root
 
   stats-db:
     image: postgres:14-alpine
     container_name: stats-db
-    volumes:
-      - /var/lib/postgesql/data/
     ports:
-      - "6542:5432"
+      - "7432:5432"
     environment:
       - POSTGRES_DB=stats
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-
-
+      - POSTGRES_PASSWORD=root
+    command: -p 7432
   ewm-service:
     build: ./main-service
-    container_name: main-container
+    container_name: main-service
     ports:
       - "8080:8080"
     depends_on:
       - ewm-db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:6432/explore
-      - POSTGRES_DB=explore
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=root
       - STAT_SERVICE_URL=http://stats-server:9090
 
   ewm-db:
     image: postgres:14-alpine
     container_name: ewm-db
-    volumes:
-      - /var/lib/postgresql/data/
     ports:
       - "6432:5432"
     environment:
       - POSTGRES_DB=explore
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      
-
+      - POSTGRES_PASSWORD=root
+    command: -p 6432
