@@ -50,20 +50,17 @@ public class AdminEventServiceImpl implements AdminEventService {
         log.info("Редактирование события eventId = {} AdminEventServiceImpl.putEvent", eventId);
         LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        if (!eventDate.isAfter(LocalDateTime.now().minusHours(2))) {
+        if (!eventDate.isAfter(LocalDateTime.now().minusHours(2)))
             throw new ErrorRequestException("Time is not correct");
-        }
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId)));
-        if (adminUpdateEventRequest.getCategory() != null) {
-            if (categoryRepository.findById(Long.valueOf(adminUpdateEventRequest.getCategory())).isEmpty()) {
-                throw new ObjectNotFoundException("Category not found.");
-            }
-            Category category = categoryRepository.findById(Long.valueOf(adminUpdateEventRequest.getCategory())).get();
-            event.setCategory(category);
-            event.setEventDate(eventDate);
-        }
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено" +
+                        " putEvent id = %s", eventId)));
+        Category category = categoryRepository.findById(adminUpdateEventRequest.getCategory())
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не " +
+                        "найдена putEvent id = %s", eventId)));
+        event.setCategory(category);
+        event.setEventDate(eventDate);
         Optional.ofNullable(adminUpdateEventRequest.getAnnotation()).ifPresent(event::setAnnotation);
         Optional.ofNullable(adminUpdateEventRequest.getDescription()).ifPresent(event::setDescription);
         Optional.ofNullable(adminUpdateEventRequest.getLocation()).ifPresent(event::setLocation);

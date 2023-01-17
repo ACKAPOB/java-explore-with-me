@@ -1,4 +1,4 @@
-package ru.practicum.explore.exception.errors.error;
+package ru.practicum.explore.exception.handler;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class ExceptionHandlers {
     public ApiError notFound(ObjectNotFoundException e) {
         return ApiError.builder()
                 .message(e.getLocalizedMessage())
-                .reason("The required object was not found.")
+                .reason("Error - notFound")
                 .status(String.valueOf(HttpStatus.NOT_FOUND))
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -30,7 +30,7 @@ public class ExceptionHandlers {
     public ApiError forbidden(RuntimeException e) {
         return ApiError.builder()
                 .message(e.getLocalizedMessage())
-                .reason("For the requested operation the conditions are not met.")
+                .reason("Error - forbidden")
                 .status(String.valueOf(HttpStatus.FORBIDDEN))
                 .timestamp(LocalDateTime.now())
                 .build();

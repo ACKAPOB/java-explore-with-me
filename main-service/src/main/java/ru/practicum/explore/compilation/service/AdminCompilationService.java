@@ -5,7 +5,6 @@ import ru.practicum.explore.compilation.dto.NewCompilationDto;
 
 public interface AdminCompilationService {
 
-
     CompilationDto createCompilation(NewCompilationDto newCompilationDto);
 
     void deleteCompilation(Long compId);

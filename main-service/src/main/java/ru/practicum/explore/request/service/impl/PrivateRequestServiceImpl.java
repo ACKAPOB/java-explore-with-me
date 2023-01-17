@@ -10,7 +10,7 @@ import ru.practicum.explore.exception.ErrorRequestException;
 import ru.practicum.explore.exception.ObjectNotFoundException;
 import ru.practicum.explore.exception.ValidationException;
 import ru.practicum.explore.request.dto.RequestDto;
-import ru.practicum.explore.request.mapper.model.Request;
+import ru.practicum.explore.request.model.Request;
 import ru.practicum.explore.request.model.StatusRequest;
 import ru.practicum.explore.request.repository.RequestRepository;
 import ru.practicum.explore.request.service.PrivateRequestService;
@@ -39,7 +39,8 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s", userId)));
-        return requestRepository.findAllByRequester_IdOrderById(userId).stream()
+        return requestRepository.findAllByRequester_IdOrderById(userId)
+                .stream()
                 .map(RequestMapper::toRequestDto)
                 .collect(Collectors.toList());
     }
@@ -50,20 +51,25 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 "PrivateRequestServiceImpl.postRequestUser", userId, eventId);
         if (eventId == null) {
             log.info("Добавление запроса от текущего eventId == null");
-            throw new ValidationException(String.format("postRequestUser Event not found id = %s", userId));
+            throw new ValidationException(String.format("Событие не найдено postRequest id = %s", userId));
         }
-        if (Objects.equals(eventRepository.findById(eventId).get().getInitiator().getId(), userId)) {
-            throw new ErrorRequestException("postRequestUser Sorry you no Event initiator");
+        if (Objects.equals(eventRepository.findById(eventId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено postRequest" +
+                        "id = %s", userId)))
+                .getInitiator().getId(), userId)) {
+            throw new ErrorRequestException("Ошибка Выне инициатор");
         }
-        if (eventRepository.findById(eventId).get().getState().equals(Status.PUBLISHED)) {
+        if (eventRepository.findById(eventId)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено postRequest" +
+                        "id = %s", userId))).getState().equals(Status.PUBLISHED)) {
             User user = userRepository
                     .findById(userId)
-                    .orElseThrow(() -> new ObjectNotFoundException(String.format("postRequestUser " +
-                            "User not found id = %s", userId)));
+                    .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден postRequest" +
+                            "id = %s", userId)));
             Event event = eventRepository
                     .findById(eventId)
-                    .orElseThrow(() -> new ObjectNotFoundException(String.format("postRequestUser " +
-                            "Event not found id = %s", eventId)));
+                    .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено " +
+                            "postRequest id = %s", eventId)));
             new Request();
             Request request = Request.builder()
                     .created(LocalDateTime.now())
@@ -72,9 +78,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                     .status(StatusRequest.PENDING)
                     .build();
 
-            Integer limitParticipant = requestRepository.countByEvent_IdAndStatus(eventId,
-                    StatusRequest.CONFIRMED);
-
+            Integer limitParticipant = requestRepository.countByEvent_IdAndStatus(eventId, StatusRequest.CONFIRMED);
             if (!event.getRequestModeration()) {
                 request.setStatus(StatusRequest.CONFIRMED);
             }
@@ -83,7 +87,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             }
             return RequestMapper.toRequestDto(requestRepository.save(request));
         } else {
-            throw new ErrorRequestException("Sorry you no Event no published");
+            throw new ErrorRequestException("Ошибка при добавлении запроса PrivateRequestServiceImpl.postRequestUser");
         }
     }
 
@@ -93,14 +97,16 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 "PrivateRequestServiceImpl.cancelRequestByUser", userId, requestId);
         userRepository
                 .findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("cancelRequestByUser User not found id = %s", userId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден " +
+                        "cancelRequestByUser id = %s", userId)));
 
         if (!Objects.equals(requestRepository.findById(requestId).get().getRequester().getId(), userId)) {
-            throw new ErrorRequestException("cancelRequestByUser  you no Event initiator");
+            throw new ErrorRequestException("Ошибка вы не инициатор cancelRequestByUser");
         }
         Request request = requestRepository
                 .findById(requestId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("cancelRequestByUser Request not found id = %s", requestId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Запрос не найден " +
+                        "cancelRequestByUser id = %s", requestId)));
         request.setStatus(StatusRequest.CANCELED);
         return RequestMapper.toRequestDto(requestRepository.save(request));
     }

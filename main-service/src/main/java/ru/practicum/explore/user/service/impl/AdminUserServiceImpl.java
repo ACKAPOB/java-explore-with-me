@@ -12,7 +12,6 @@ import ru.practicum.explore.user.mapper.UserMapper;
 import ru.practicum.explore.user.repository.UserRepository;
 import ru.practicum.explore.user.service.AdminUserService;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +38,8 @@ class AdminUserServiceImpl implements AdminUserService {
         try {
             return userMapper.toUserDto(userRepository.save(userMapper.toUser(userRequest)));
         } catch (Exception e)  {
-            throw new ConflictException(String.format("%s - имя пользователя уже сущетсвует.", userRequest.getName()));
+            throw new ConflictException(String.format("Ошибка имя пользователя уже сущетсвует postUser name " +
+                    "= {}", userRequest.getName()));
         }
     }
 
@@ -48,7 +48,8 @@ class AdminUserServiceImpl implements AdminUserService {
         log.info("Удаление пользователя userId = {} AdminUserServiceImpl.deleteUser", userId);
         userRepository
                 .delete(userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s", userId))));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден " +
+                        "deleteUser id = %s", userId))));
     }
 
 }

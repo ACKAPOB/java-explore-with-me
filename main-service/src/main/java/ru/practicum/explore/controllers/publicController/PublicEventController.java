@@ -27,17 +27,17 @@ public class PublicEventController {
 
     @GetMapping
     public List<EventShortDto> getAllEvent(
-            @RequestParam(required = false) String text,
-            @RequestParam(required = false) List<Long> categories,
-            @RequestParam(required = false) Boolean paid,
-            @RequestParam(required = false)
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-            @RequestParam(required = false)
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-            @RequestParam(required = false) Boolean onlyAvailable,
-            @RequestParam(required = false, defaultValue = "EVENT_DATE") EventSort sort,
-            @RequestParam(defaultValue = "0") Integer from,
-            @RequestParam(defaultValue = "10") Integer size,
+                            @RequestParam(required = false) String text,
+                            @RequestParam(required = false) List<Long> categories,
+                            @RequestParam(required = false) Boolean paid,
+                            @RequestParam(required = false)
+                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                            @RequestParam(required = false)
+                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                            @RequestParam(required = false) Boolean onlyAvailable,
+                            @RequestParam(required = false, defaultValue = "EVENT_DATE") EventSort sort,
+                            @RequestParam(defaultValue = "0") Integer from,
+                            @RequestParam(defaultValue = "10") Integer size,
             HttpServletRequest request) {
         log.info("Получение событий с возможностью фильтрации PublicEventController.getAllEvent text = {}", text);
         return publicEventService.getAllEvent(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);

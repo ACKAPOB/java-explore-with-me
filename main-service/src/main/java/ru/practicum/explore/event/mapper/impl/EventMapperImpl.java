@@ -39,7 +39,6 @@ public class EventMapperImpl implements EventMapper {
         this.commentMapper = commentMapper;
     }
 
-
     public Integer getConfirmedRequests(Long id) {
         return requestRepository.countByEvent_IdAndStatus(id, StatusRequest.CONFIRMED);
     }

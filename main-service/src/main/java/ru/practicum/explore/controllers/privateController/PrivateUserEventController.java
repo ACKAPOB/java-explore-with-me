@@ -23,7 +23,6 @@ public class PrivateUserEventController {
         this.eventService = eventService;
     }
 
-
     @GetMapping
     public Collection<EventShortDto> findAllEventsByUserId(@PathVariable Long userId,
                                                            @RequestParam(defaultValue = "0") Integer from,

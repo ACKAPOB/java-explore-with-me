@@ -17,7 +17,6 @@ import ru.practicum.explore.exception.ObjectNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @Slf4j
 public class AdminCompilationServiceImpl implements AdminCompilationService {

@@ -25,7 +25,8 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         if (categoryRepository.findFirstByName(categoryDto.getName()).isPresent())
             throw new ConflictException("Error name AdminCategoryServiceImpl.patchCategory");
         Category category = categoryRepository.findById(categoryDto.getId())
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Category not found id = %s", categoryDto.getId())));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена patchCategory " +
+                        "id = %s", categoryDto.getId())));
         categoryMapper.updateCategoryFromCategoryDto(categoryDto, category);
         return categoryMapper.toCategoryDto(categoryRepository.save(category));
     }
@@ -43,7 +44,8 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         log.info("Удаление категории AdminCategoryServiceImpl.deleteCategory catId = {}", catId);
         categoryRepository
                 .delete(categoryRepository.findById(catId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Category not found id = %s", catId))));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена " +
+                        "deleteCategory id = %s", catId))));
     }
 
 }

@@ -3,7 +3,7 @@ package ru.practicum.explore.request.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.practicum.explore.request.mapper.model.Request;
+import ru.practicum.explore.request.model.Request;
 import ru.practicum.explore.request.model.StatusRequest;
 
 import java.util.List;

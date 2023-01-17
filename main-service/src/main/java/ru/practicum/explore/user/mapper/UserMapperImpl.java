@@ -20,21 +20,15 @@ public class UserMapperImpl implements UserMapper {
 
     @Override
     public User toUser(NewUserRequest newUserRequest) {
-        if (newUserRequest == null) {
-            return null;
-        }
+
         return User.builder()
                 .email(newUserRequest.getEmail())
                 .name(newUserRequest.getName())
                 .build();
     }
 
-
     @Override
     public UserShortDto toUserShortDto(User user) {
-        if (user == null) {
-            return null;
-        }
         return UserShortDto.builder()
                 .id(user.getId())
                 .name(user.getName())

@@ -2,7 +2,7 @@ package ru.practicum.explore.request.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.request.dto.RequestDto;
-import ru.practicum.explore.request.mapper.model.Request;
+import ru.practicum.explore.request.model.Request;
 
 import java.time.format.DateTimeFormatter;
 

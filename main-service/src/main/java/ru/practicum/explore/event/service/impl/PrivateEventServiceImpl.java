@@ -18,7 +18,7 @@ import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.location.service.LocationService;
 import ru.practicum.explore.request.dto.RequestDto;
 import ru.practicum.explore.request.mapper.RequestMapper;
-import ru.practicum.explore.request.mapper.model.Request;
+import ru.practicum.explore.request.model.Request;
 import ru.practicum.explore.request.model.StatusRequest;
 import ru.practicum.explore.request.repository.RequestRepository;
 import ru.practicum.explore.user.model.User;

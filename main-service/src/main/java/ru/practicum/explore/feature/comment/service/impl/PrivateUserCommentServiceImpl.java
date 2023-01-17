@@ -35,53 +35,54 @@ class PrivateUserCommentServiceImpl implements PrivateUserCommentService {
     public CommentDto postComment(Long userId, Long eventId, CommentDto commentDto) {
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено postComment " +
+                        "id = %s", eventId)));
         User user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s", userId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден postComment " +
+                        "id = %s", userId)));
         if (commentDto.getText().isEmpty())
-            throw new ErrorRequestException("Ошибка - текст комментария пуст");
+            throw new ErrorRequestException("Ошибка - текст комментария пуст postComment");
         if (event.getState() != Status.PUBLISHED)
-            throw new ErrorRequestException("Ошибка - событие не опубликовано");
-        Comment comment = commentMapper.toComment(commentDto, user, event);
-        return commentMapper.toCommentDto(commentRepository.save(comment));
+            throw new ErrorRequestException("Ошибка - событие не опубликовано postComment");
+        return commentMapper.toCommentDto(commentRepository.save(commentMapper.toComment(commentDto, user, event)));
     }
 
     @Override
     public void deleteComment(Long userId, Long comId) {
         userRepository
                 .findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s", userId)));
-        Comment comment = commentRepository
-                .findById(comId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Comment not found id = %s", comId)));
-        if (!Objects.equals(comment.getId(), userId))
-            throw new ErrorRequestException("Ошибка - вы не автор комментария");
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден delete Comment " +
+                        "id = %s", userId)));
+        if (!Objects.equals(commentRepository
+          .findById(comId).orElseThrow(() -> new ObjectNotFoundException(String.format("Комментарий не найден " +
+                                "patchComment " + "id = %s", comId)))
+          .getId(),
+          userId))
+            throw new ErrorRequestException("Ошибка - вы не автор комментария deleteComment");
         commentRepository.deleteById(comId);
     }
 
     @Override
     public CommentDto patchComment(Long userId, Long eventId, UpdateComment updateComment) {
-
         userRepository
                 .findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s", userId)));
-
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден patchComment " +
+                        "id = %s", userId)));
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId)));
-
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено patchComment " +
+                        "id = %s", eventId)));
         Comment comment = commentRepository
                 .findById(updateComment.getId())
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Comment not found id = %s",
-                        updateComment.getId())));
-
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Комментарий не найден patchComment " +
+                                "id = %s", updateComment.getId())));
         if (event.getState() != Status.PUBLISHED)
-            throw new ErrorRequestException("Ошибка - событие не опубликовано");
+            throw new ErrorRequestException("Ошибка - событие не опубликовано patchComment");
         if (updateComment.getText().isEmpty())
-            throw new ErrorRequestException("Ошибка - текст комментария пуст");
+            throw new ErrorRequestException("Ошибка - текст комментария пуст patchComment");
         if (!Objects.equals(comment.getId(), userId))
-            throw new ErrorRequestException("Ошибка - вы не автор комментария");
+            throw new ErrorRequestException("Ошибка - вы не автор комментария patchComment");
         commentMapper.updateCommentFromUpdateComment(updateComment, comment);
         return commentMapper.toCommentDto(commentRepository.save(comment));
     }

@@ -25,9 +25,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> getAllEvents(List<Long> users, List<Status> states, List<Long> categories,
                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
-
-//and e.eventDate between :rangeStart and :rangeEnd
-
     @Query("select e from Event e " +
             "where ((e.annotation LIKE %?1%)" +
             "OR (e.description LIKE %?1%)) " +
@@ -35,6 +32,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND e.paid=?3 " +
             "AND e.eventDate BETWEEN ?4  and ?5 " +
             "order by e.id")
-    List<Event> findAllEventsByAnnotationAndDescriptionAndCategoryAndPaidAndEventDateOrderById(String text, List<Long> catIds, Boolean paid,
-                                          LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
+    List<Event> findAllEventsByAnnotationAndDescriptionAndCategoryAndPaidAndEventDateOrderById(String text,
+            List<Long> catIds, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 }

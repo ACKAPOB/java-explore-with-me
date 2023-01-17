@@ -1,9 +1,8 @@
-package ru.practicum.explore.request.mapper.model;
+package ru.practicum.explore.request.model;
 
 import lombok.*;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.user.model.User;
-import ru.practicum.explore.request.model.StatusRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

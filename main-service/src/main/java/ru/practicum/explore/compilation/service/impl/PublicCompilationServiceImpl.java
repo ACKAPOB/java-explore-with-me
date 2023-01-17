@@ -53,7 +53,8 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
         log.info("Получение подборки событий по его id PublicCompilationServiceImpl.getCompilation compId={}", compId);
         Compilation compilation = compilationRepository
                 .findById(compId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Compilation not found id = %s", compId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Подборка не найдена id = %s " +
+                        "getCompilation", compId)));
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
         if (compilation.getEvents().size() != 0) {
             eventShortDtoList = compilation

@@ -37,7 +37,8 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
         log.info("Получение информации о категории по её идентификатору CategoryServiceImpl.getCategoryById" +
                 "  catId = {}", catId);
         Category category = categoryRepository.findById(catId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Category not found id = %s", catId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена " +
+                        "getCategoryById id = %s", catId)));
         return Optional.of(categoryMapper.toCategoryDto(category));
     }
 

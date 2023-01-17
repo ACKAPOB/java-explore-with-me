@@ -12,7 +12,7 @@ import ru.practicum.explore.location.model.Location;
 @AllArgsConstructor
 public class AdminUpdateEventRequest {
     private String annotation;
-    private Integer category;
+    private Long category;
     private String description;
     private String eventDate;
     private Location location;

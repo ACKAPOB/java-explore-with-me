@@ -14,10 +14,6 @@ public class PrivateUserCommentController {
 
     PrivateUserCommentService privateUserCommentService;
 
-    // users/{userId}/events/{eventId}/comment
-    // users/{userId}/comment/{comId}
-    // users/{userId}/events/{eventId}/comment
-
     @PostMapping("/events/{eventId}/comment")
     public CommentDto postComment(@PathVariable Long userId,
                                     @PathVariable Long eventId,
