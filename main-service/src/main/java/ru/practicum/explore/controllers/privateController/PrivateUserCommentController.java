@@ -16,8 +16,8 @@ public class PrivateUserCommentController {
 
     @PostMapping("/events/{eventId}/comment")
     public CommentDto postComment(@PathVariable Long userId,
-                                    @PathVariable Long eventId,
-                                    @RequestBody CommentDto commentDto) {
+                                  @PathVariable Long eventId,
+                                  @RequestBody CommentDto commentDto) {
         log.info("Добавление комментария пользователем userId = {}, eventId = {} " +
                 "PrivateUserCommentController.postComment", userId, eventId);
         return privateUserCommentService.postComment(userId, eventId, commentDto);
@@ -32,8 +32,8 @@ public class PrivateUserCommentController {
 
     @PatchMapping("/events/{eventId}/comment")
     public CommentDto patchComment(@PathVariable Long userId,
-                                    @PathVariable Long eventId,
-                                    @RequestBody UpdateComment updateComment) {
+                                   @PathVariable Long eventId,
+                                   @RequestBody UpdateComment updateComment) {
         log.info("update comment by userId={} and eventId{}", userId, eventId);
         return privateUserCommentService.patchComment(userId, eventId, updateComment);
     }

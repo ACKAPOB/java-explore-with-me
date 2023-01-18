@@ -38,7 +38,8 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 "PrivateRequestServiceImpl.getRequestsByUser", userId);
         userRepository
                 .findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s", userId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользовтель не найден getRequestsByUser " +
+                        "id = %s", userId)));
         return requestRepository.findAllByRequester_IdOrderById(userId)
                 .stream()
                 .map(RequestMapper::toRequestDto)
@@ -57,7 +58,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено postRequest" +
                         "id = %s", userId)))
                 .getInitiator().getId(), userId)) {
-            throw new ErrorRequestException("Ошибка Выне инициатор");
+            throw new ErrorRequestException("Ошибка Вы не инициатор");
         }
         if (eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено postRequest" +
