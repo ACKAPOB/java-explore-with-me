@@ -26,9 +26,6 @@ public class CommentMapperImpl implements CommentMapper {
 
     @Override
     public Comment toComment(CommentDto commentDto, User user, Event event) {
-        if (commentDto == null) {
-            return null;
-        }
         return Comment.builder()
                 .id(commentDto.getId())
                 .text(commentDto.getText())
