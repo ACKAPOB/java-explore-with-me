@@ -24,7 +24,6 @@ public class BaseClient {
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build();
     }
-
     private static ResponseEntity<String> prepareGatewayResponse(ResponseEntity<String> response) {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
@@ -38,11 +37,9 @@ public class BaseClient {
 
         return responseBuilder.build();
     }
-
     protected ResponseEntity<String> get(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
-
     protected <T> ResponseEntity<String> post(String path, T body) {
         return post(path, null, body);
     }
@@ -50,7 +47,6 @@ public class BaseClient {
     protected <T> ResponseEntity<String> post(String path, @Nullable Map<String, Object> parameters, T body) {
         return makeAndSendRequest(HttpMethod.POST, path, parameters, body);
     }
-
     private <T> ResponseEntity<String> makeAndSendRequest(HttpMethod method, String path, @Nullable Map<String,
             Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
@@ -67,7 +63,6 @@ public class BaseClient {
         }
         return prepareGatewayResponse(statsServerResponse);
     }
-
     private HttpHeaders defaultHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
