@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface AdminEventService {
 
-    List<EventFullDto> getAllEvents(List<Long> users, List<Status> states, List<Long> categories,
-                                    LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
+    List<EventFullDto> getAll(List<Long> users, List<Status> states, List<Long> categories,
+                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
-    EventFullDto putEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest);
+    EventFullDto put(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest);
 
-    EventFullDto approvePublishEvent(Long eventId);
+    EventFullDto publishEvent(Long eventId);
 
-    EventFullDto approveRejectEvent(Long eventId);
+    EventFullDto rejectEvent(Long eventId);
 }

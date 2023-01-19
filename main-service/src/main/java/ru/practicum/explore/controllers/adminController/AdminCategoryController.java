@@ -21,19 +21,19 @@ public class AdminCategoryController {
     @PatchMapping
     public CategoryDto patchCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Редактирование события AdminCategoryController.patchCategory categoryDto = {}", categoryDto);
-        return adminCategoryService.patchCategory(categoryDto);
+        return adminCategoryService.patch(categoryDto);
     }
 
     @PostMapping
     public CategoryDto postCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         log.info("Добавление новой категории AdminCategoryController.postCategory newCategoryDto = {}", newCategoryDto);
-        return adminCategoryService.postCategory(newCategoryDto);
+        return adminCategoryService.post(newCategoryDto);
     }
 
     @DeleteMapping("/{catId}")
     public void deleteCategory(@PathVariable Long catId) {
         log.info("Удаление категории AdminCategoryController.deleteCategory catId = {}", catId);
-        adminCategoryService.deleteCategory(catId);
+        adminCategoryService.delete(catId);
     }
 
 }

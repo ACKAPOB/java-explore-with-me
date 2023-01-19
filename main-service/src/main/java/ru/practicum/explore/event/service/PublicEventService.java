@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface PublicEventService {
 
 
-    List<EventShortDto> getAllEvent(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
-                                    LocalDateTime rangeEnd, Boolean onlyAvailable, EventSort sort, Integer from,
-                                    Integer size, HttpServletRequest request);
+    List<EventShortDto> getAll(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
+                               LocalDateTime rangeEnd, Boolean onlyAvailable, EventSort sort, Integer from,
+                               Integer size, HttpServletRequest request);
 
-    Optional<EventFullDto> getEvent(Long eventId, HttpServletRequest request);
+    Optional<EventFullDto> get(Long eventId, HttpServletRequest request);
 
 }

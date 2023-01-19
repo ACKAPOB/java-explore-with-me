@@ -5,9 +5,10 @@ import ru.practicum.explore.category.dto.NewCategoryDto;
 
 public interface AdminCategoryService {
 
-    CategoryDto patchCategory(CategoryDto categoryDto);
+    CategoryDto patch(CategoryDto categoryDto);
 
-    CategoryDto postCategory(NewCategoryDto newCategoryDto);
+    CategoryDto post(NewCategoryDto newCategoryDto);
 
-    void deleteCategory(Long catId);
+    void delete(Long catId);
 }
+

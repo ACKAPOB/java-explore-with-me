@@ -6,6 +6,7 @@ import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
+import ru.practicum.explore.event.service.PrivatEventService;
 import ru.practicum.explore.event.service.impl.PrivateEventServiceImpl;
 import ru.practicum.explore.request.dto.RequestDto;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/users/{userId}/events")
 @Slf4j
 public class PrivateUserEventController {
-    private final PrivateEventServiceImpl eventService;
+    private final PrivatEventService eventService;
 
     public PrivateUserEventController(PrivateEventServiceImpl eventService) {
         this.eventService = eventService;
@@ -29,7 +30,7 @@ public class PrivateUserEventController {
                                                            @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение событий, добавленных текущим пользователем " +
                 "PrivateUserEventController.findAllEventsByUserId userId = {}", userId);
-        return eventService.findAllEventsByUserId(userId, from, size);
+        return eventService.findAll(userId, from, size);
     }
 
     @PatchMapping
@@ -37,13 +38,13 @@ public class PrivateUserEventController {
                                          @RequestBody @Valid  UpdateEventRequest updateEventRequest) {
         log.info("Изменение события добавленного текущим пользователем userId = {} " +
                 "PrivateUserEventController.patchEventByUser", userId);
-        return eventService.patchEventByUser(userId, updateEventRequest);
+        return eventService.patch(userId, updateEventRequest);
     }
 
     @PostMapping
     public EventFullDto postEvent(@PathVariable Long userId, @Valid @RequestBody NewEventDto newEventDto) {
         log.info("Добавление нового события userId = {} PrivateUserEventController.postEvent", userId);
-        return eventService.postEvent(userId, newEventDto);
+        return eventService.post(userId, newEventDto);
     }
 
     @GetMapping("/{eventId}")
@@ -64,7 +65,7 @@ public class PrivateUserEventController {
     public List<RequestDto> getRequestByUser(@PathVariable Long userId, @PathVariable Long eventId) {
         log.info("Получение информации о запросах на участие в событии текущего пользователя " +
                 "PrivateUserEventController.getRequestByUser userId = {}, eventId={}", userId, eventId);
-        return eventService.getRequestByUser(userId, eventId);
+        return eventService.getRequest(userId, eventId);
     }
 
     @PatchMapping("/{eventId}/requests/{reqId}/confirm")
@@ -72,7 +73,7 @@ public class PrivateUserEventController {
                                                 @PathVariable Long reqId) {
         log.info("Подтверждение чужой заявки на участие в событии текущего пользователя reqId = {}, userId = {}, " +
                 "eventId = {} PrivateUserEventController.approveConfirmUserByEvent", reqId, userId, eventId);
-        return eventService.approveConfirmUserByEvent(userId, eventId, reqId);
+        return eventService.confirmUserByEvent(userId, eventId, reqId);
     }
 
     @PatchMapping("/{eventId}/requests/{reqId}/reject")
@@ -80,7 +81,7 @@ public class PrivateUserEventController {
                                                @PathVariable Long reqId) {
         log.info("Отклонение чужой заявки на участие в событии текущего пользователя. reqId ={}, userId={}, " +
                 "eventId={} PrivateUserEventController.approveRejectUserByEvent", reqId, userId, eventId);
-        return eventService.approveRejectUserByEvent(userId, eventId, reqId);
+        return eventService.rejectUserByEvent(userId, eventId, reqId);
     }
 }
 

@@ -5,15 +5,16 @@ import ru.practicum.explore.compilation.dto.NewCompilationDto;
 
 public interface AdminCompilationService {
 
-    CompilationDto createCompilation(NewCompilationDto newCompilationDto);
+    CompilationDto create(NewCompilationDto newCompilationDto);
 
-    void deleteCompilation(Long compId);
+    void delete(Long compId);
 
-    void deleteEventInCompilation(Long compId, Long eventId);
+    void deleteEvent(Long compId, Long eventId);
 
-    void addEventInCompilation(Long compId, Long eventId);
+    void addEvent(Long compId, Long eventId);
 
-    void unpinCompilation(Long compId);
+    void unpin(Long compId);
 
-    void pinCompilation(Long compId);
+    void pin(Long compId);
+
 }

@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface AdminUserService {
 
-    List<UserDto> getAllUsers(List<Long> ids, Integer from, Integer size);
+    List<UserDto> getAll(List<Long> ids, Integer from, Integer size);
 
-    UserDto postUser(NewUserRequest userRequest);
+    UserDto post(NewUserRequest userRequest);
 
-    void deleteUser(Long userId);
+    void delete(Long userId);
 }

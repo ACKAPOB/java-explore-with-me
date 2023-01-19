@@ -20,8 +20,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND e.state IN ?2 " +
             "AND e.category.id IN ?3 " +
             "AND e.eventDate>=?4 " +
-            "AND e.eventDate<=?5 " +
-            "order by e.id")
+            "AND e.eventDate<=?5")
     List<Event> getAllEvents(List<Long> users, List<Status> states, List<Long> categories,
                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
@@ -30,8 +29,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "OR (e.description LIKE %?1%)) " +
             "AND e.category.id IN ?2 " +
             "AND e.paid=?3 " +
-            "AND e.eventDate BETWEEN ?4  and ?5 " +
-            "order by e.id")
+            "AND e.eventDate BETWEEN ?4  and ?5")
     List<Event> findAllEventsByAnnotationAndDescriptionAndCategoryAndPaidAndEventDateOrderById(String text,
             List<Long> catIds, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 }

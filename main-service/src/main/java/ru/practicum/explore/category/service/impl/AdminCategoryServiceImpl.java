@@ -3,6 +3,7 @@ package ru.practicum.explore.category.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.NewCategoryDto;
 import ru.practicum.explore.category.mapper.CategoryMapper;
@@ -20,10 +21,11 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public CategoryDto patchCategory(CategoryDto categoryDto) {
-        log.info("Редактирование события AdminCategoryServiceImpl.patchCategory categoryDto = {}", categoryDto);
+    @Transactional
+    public CategoryDto patch(CategoryDto categoryDto) {
+        log.info("Редактирование события AdminCategoryServiceImpl.patch categoryDto = {}", categoryDto);
         if (categoryRepository.findFirstByName(categoryDto.getName()).isPresent())
-            throw new ConflictException("Error name AdminCategoryServiceImpl.patchCategory");
+            throw new ConflictException("Error name AdminCategoryServiceImpl.patch");
         Category category = categoryRepository.findById(categoryDto.getId())
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена patchCategory " +
                         "id = %s", categoryDto.getId())));
@@ -32,20 +34,22 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     }
 
     @Override
-    public CategoryDto postCategory(NewCategoryDto newCategoryDto) {
-        log.info("Добавление новой категории AdminCategoryServiceImpl.postCategory newCategoryDto = {}", newCategoryDto);
+    @Transactional
+    public CategoryDto post(NewCategoryDto newCategoryDto) {
+        log.info("Добавление новой категории AdminCategoryServiceImpl.post newCategoryDto = {}", newCategoryDto);
         if (categoryRepository.findFirstByName(newCategoryDto.getName()).isPresent())
-            throw new ConflictException("Error name AdminCategoryServiceImpl.patchCategory");
+            throw new ConflictException("Error name AdminCategoryServiceImpl.post");
         return categoryMapper.toCategoryDto(categoryRepository.save(categoryMapper.toCategory(newCategoryDto)));
     }
 
     @Override
-    public void deleteCategory(Long catId) {
-        log.info("Удаление категории AdminCategoryServiceImpl.deleteCategory catId = {}", catId);
+    @Transactional
+    public void delete(Long catId) {
+        log.info("Удаление категории AdminCategoryServiceImpl.delete catId = {}", catId);
         categoryRepository
                 .delete(categoryRepository.findById(catId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена " +
-                        "deleteCategory id = %s", catId))));
+                        "delete id = %s", catId))));
     }
 
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.exception.ConflictException;
 import ru.practicum.explore.exception.ObjectNotFoundException;
 import ru.practicum.explore.user.dto.NewUserRequest;
@@ -23,8 +24,8 @@ class AdminUserServiceImpl implements AdminUserService {
     private final UserMapper userMapper;
 
     @Override
-    public List<UserDto> getAllUsers(List<Long> ids, Integer from, Integer size) {
-        log.info("Получение информации о пользователях AdminUserServiceImpl.getAllUsers");
+    public List<UserDto> getAll(List<Long> ids, Integer from, Integer size) {
+        log.info("Получение информации о пользователях AdminUserServiceImpl.getAll");
         return userRepository
                 .findAllByIdOrderByIdDesc(ids, PageRequest.of(from / size, size))
                 .stream()
@@ -33,23 +34,25 @@ class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public UserDto postUser(NewUserRequest userRequest) {
-        log.info("Добавление нового пользователя newUserRequest = {} AdminUserServiceImpl.postUser", userRequest);
+    @Transactional
+    public UserDto post(NewUserRequest userRequest) {
+        log.info("Добавление нового пользователя newUserRequest = {} AdminUserServiceImpl.post", userRequest);
         try {
             return userMapper.toUserDto(userRepository.save(userMapper.toUser(userRequest)));
         } catch (Exception e)  {
-            throw new ConflictException(String.format("Ошибка имя пользователя уже сущетсвует postUser name " +
+            throw new ConflictException(String.format("Ошибка имя пользователя уже сущетсвует post name " +
                     "= {}", userRequest.getName()));
         }
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        log.info("Удаление пользователя userId = {} AdminUserServiceImpl.deleteUser", userId);
+    @Transactional
+    public void delete(Long userId) {
+        log.info("Удаление пользователя userId = {} AdminUserServiceImpl.delete", userId);
         userRepository
                 .delete(userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден " +
-                        "deleteUser id = %s", userId))));
+                        "delete id = %s", userId))));
     }
 
 }

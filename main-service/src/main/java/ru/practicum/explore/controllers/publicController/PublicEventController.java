@@ -40,14 +40,14 @@ public class PublicEventController {
                             @RequestParam(defaultValue = "10") Integer size,
             HttpServletRequest request) {
         log.info("Получение событий с возможностью фильтрации PublicEventController.getAllEvent text = {}", text);
-        return publicEventService.getAllEvent(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
+        return publicEventService.getAll(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
     }
 
     @GetMapping("/{eventId}")
     public Optional<EventFullDto> getEvent(@PathVariable Long eventId, HttpServletRequest request) {
         log.info("Получение подробной информации об опубликованном событии по его идентификатору " +
                 "PublicEventController.getEvent id={}", eventId);
-        return publicEventService.getEvent(eventId, request);
+        return publicEventService.get(eventId, request);
     }
 }
 

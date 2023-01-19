@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PublicCompilationService {
 
-    List<CompilationDto> getCompilationAll(Boolean pinned, Integer from, Integer size);
+    List<CompilationDto> findAll(Boolean pinned, Integer from, Integer size);
 
-    Optional<CompilationDto> getCompilation(Long compId);
+    Optional<CompilationDto> get(Long compId);
 }

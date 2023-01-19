@@ -23,12 +23,12 @@ public class PublicCompilationController {
                                                   @RequestParam(defaultValue = "0") Integer from,
                                                   @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение подборок событий PublicCompilationController.getAll");
-        return publicCompilationService.getCompilationAll(pinned, from, size);
+        return publicCompilationService.findAll(pinned, from, size);
     }
 
     @GetMapping("/{compId}")
     public Optional<CompilationDto> getCompilation(@PathVariable Long compId) {
         log.info("Получение подборки событий по его id PublicCompilationController.getCompilation compId={}", compId);
-        return publicCompilationService.getCompilation(compId);
+        return publicCompilationService.get(compId);
     }
 }

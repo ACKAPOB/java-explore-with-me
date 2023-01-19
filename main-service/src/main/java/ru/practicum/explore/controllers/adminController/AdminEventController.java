@@ -19,6 +19,7 @@ public class AdminEventController {
     private final AdminEventServiceImpl eventService;
 
     public AdminEventController(AdminEventServiceImpl eventService) {
+
         this.eventService = eventService;
     }
 
@@ -29,29 +30,31 @@ public class AdminEventController {
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+            //@RequestParam(required = false) @DateTimeFormat() LocalDateTime rangeStart,
+            //@RequestParam(required = false) @DateTimeFormat() LocalDateTime rangeEnd,
             @RequestParam(defaultValue = "0") Integer from,
             @RequestParam(defaultValue = "10") Integer size) {
         log.info("Поиск событий AdminEventController.getAllEvents users = {}", users);
-        return eventService.getAllEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventService.getAll(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PutMapping("/{eventId}")
     public EventFullDto putEvent(@PathVariable Long eventId,
                                  @RequestBody AdminUpdateEventRequest adminUpdateEventRequest) {
         log.info("Редактирование события AdminEventController.putEvent eventid = {}", eventId);
-        return eventService.putEvent(eventId, adminUpdateEventRequest);
+        return eventService.put(eventId, adminUpdateEventRequest);
     }
 
     @PatchMapping("/{eventId}/publish")
     public EventFullDto approvePublishEvent(@PathVariable Long eventId) {
         log.info(" Публикация события eventId = {} AdminEventController.approvePublishEvent", eventId);
-        return eventService.approvePublishEvent(eventId);
+        return eventService.publishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
     public EventFullDto approveRejectEvent(@PathVariable Long eventId) {
         log.info("Отклонение события AdminEventController.approvePublishEvent eventId = {}", eventId);
-        return eventService.approveRejectEvent(eventId);
+        return eventService.rejectEvent(eventId);
     }
 
 }

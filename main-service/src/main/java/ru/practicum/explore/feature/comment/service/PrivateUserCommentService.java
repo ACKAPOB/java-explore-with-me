@@ -12,4 +12,5 @@ public interface PrivateUserCommentService {
 
     CommentDto patchComment(Long userId, Long eventId, UpdateComment updateComment);
 
+    CommentDto getComment(Long comId, Long userId);
 }

@@ -25,19 +25,19 @@ public class AdminUserController {
                                            @RequestParam(defaultValue = "0") Integer from,
                                            @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение информации о пользователях AdminUserController.getAllUsers");
-        return adminUserService.getAllUsers(ids, from, size);
+        return adminUserService.getAll(ids, from, size);
     }
 
     @PostMapping
     public UserDto postUser(@Valid @RequestBody NewUserRequest newUserRequest) {
         log.info("Добавление нового пользователя newUserRequest = {} AdminUserController.postUser", newUserRequest);
-        return adminUserService.postUser(newUserRequest);
+        return adminUserService.post(newUserRequest);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
         log.info("Удаление пользователя userId = {} AdminUserController.deleteUser", userId);
-        adminUserService.deleteUser(userId);
+        adminUserService.delete(userId);
     }
 
 }

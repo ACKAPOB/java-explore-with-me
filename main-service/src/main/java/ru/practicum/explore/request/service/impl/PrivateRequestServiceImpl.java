@@ -3,6 +3,7 @@ package ru.practicum.explore.request.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.Status;
 import ru.practicum.explore.event.repository.EventRepository;
@@ -33,9 +34,9 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     private final UserRepository userRepository;
 
     @Override
-    public List<RequestDto> getRequestsByUser(Long userId) {
+    public List<RequestDto> get(Long userId) {
         log.info("Получение информации о заявках текущего пользователя на участие в чужих событиях. userId = {} " +
-                "PrivateRequestServiceImpl.getRequestsByUser", userId);
+                "PrivateRequestServiceImpl.get", userId);
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользовтель не найден getRequestsByUser " +
@@ -47,9 +48,10 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     }
 
     @Override
-    public RequestDto postRequest(Long userId, Long eventId) {
+    @Transactional
+    public RequestDto post(Long userId, Long eventId) {
         log.info("Добавление запроса от текущего пользователя на участие в событии userId = {} and eventId = {} " +
-                "PrivateRequestServiceImpl.postRequestUser", userId, eventId);
+                "PrivateRequestServiceImpl.post", userId, eventId);
         if (eventId == null) {
             log.info("Добавление запроса от текущего eventId == null");
             throw new ValidationException(String.format("Событие не найдено postRequest id = %s", userId));
@@ -88,26 +90,27 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             }
             return RequestMapper.toRequestDto(requestRepository.save(request));
         } else {
-            throw new ErrorRequestException("Ошибка при добавлении запроса PrivateRequestServiceImpl.postRequestUser");
+            throw new ErrorRequestException("Ошибка при добавлении запроса PrivateRequestServiceImpl.post");
         }
     }
 
     @Override
-    public RequestDto cancelRequestByUser(Long userId, Long requestId) {
+    @Transactional
+    public RequestDto cancelRequest(Long userId, Long requestId) {
         log.info("Отмена своего запроса на участие в событии userId = {}, requestId = {} " +
-                "PrivateRequestServiceImpl.cancelRequestByUser", userId, requestId);
+                "PrivateRequestServiceImpl.cancelRequest", userId, requestId);
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден " +
-                        "cancelRequestByUser id = %s", userId)));
+                        "cancelRequest id = %s", userId)));
 
         if (!Objects.equals(requestRepository.findById(requestId).get().getRequester().getId(), userId)) {
-            throw new ErrorRequestException("Ошибка вы не инициатор cancelRequestByUser");
+            throw new ErrorRequestException("Ошибка вы не инициатор cancelRequest");
         }
         Request request = requestRepository
                 .findById(requestId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Запрос не найден " +
-                        "cancelRequestByUser id = %s", requestId)));
+                        "cancelRequest id = %s", requestId)));
         request.setStatus(StatusRequest.CANCELED);
         return RequestMapper.toRequestDto(requestRepository.save(request));
     }

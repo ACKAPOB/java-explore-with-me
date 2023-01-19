@@ -5,9 +5,9 @@ import ru.practicum.explore.request.dto.RequestDto;
 import java.util.List;
 
 public interface PrivateRequestService {
-    List<RequestDto> getRequestsByUser(Long userId);
+    List<RequestDto> get(Long userId);
 
-    RequestDto postRequest(Long userId, Long eventId);
+    RequestDto post(Long userId, Long eventId);
 
-    RequestDto cancelRequestByUser(Long userId, Long requestId);
+    RequestDto cancelRequest(Long userId, Long requestId);
 }

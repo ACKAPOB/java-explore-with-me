@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
 import ru.practicum.explore.event.dto.*;
@@ -43,9 +44,9 @@ public class PrivateEventServiceImpl implements PrivatEventService {
 
 
     @Override
-    public Collection<EventShortDto> findAllEventsByUserId(Long userId, Integer from, Integer size) {
+    public Collection<EventShortDto> findAll(Long userId, Integer from, Integer size) {
         log.info("Получение событий, добавленных текущим пользователем " +
-                "PrivateEventServiceImpl.findAllEventsByUserId text = {}", userId);
+                "PrivateEventServiceImpl.findAll text = {}", userId);
         checkUser(userId);
         return eventRepository
                 .findAllByInitiator_IdOrderById(userId, PageRequest.of(from / size, size)).stream()
@@ -54,28 +55,29 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     }
 
     @Override
-    public EventFullDto patchEventByUser(Long userId, UpdateEventRequest updateEventRequest) {
+    @Transactional
+    public EventFullDto patch(Long userId, UpdateEventRequest updateEventRequest) {
         log.info("Изменение события добавленного текущим пользователем userId = {} " +
-                "PrivateEventServiceImpl.patchEventByUser", userId);
+                "PrivateEventServiceImpl.patch", userId);
         checkUser(userId);
         Event event = eventRepository
                 .findById(updateEventRequest.getEventId())
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s",
                         updateEventRequest.getEventId())));
 
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
-            throw new ErrorRequestException("No event initiator");
+            throw new ErrorRequestException("Ошибка пользрватель не является инициатором события");
         }
         if (!event.getEventDate().isAfter(LocalDateTime.now().minusHours(2))) {
-            throw new ErrorRequestException("Bad date.");
+            throw new ErrorRequestException("Ошибка время указано некорректно");
         }
         if (event.getState().equals(Status.PUBLISHED)) {
-            throw new ErrorRequestException("Sorry, event status published.");
+            throw new ErrorRequestException("Ошибка соытие уже опубликовано");
         }
         if (updateEventRequest.getCategory() != null) {
             Category category = categoryRepository
                     .findById(updateEventRequest.getCategory())
-                    .orElseThrow(() -> new ObjectNotFoundException(String.format("Category not found id = %s",
+                    .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена id = %s",
                             updateEventRequest.getCategory())));
             event.setCategory(category);
         }
@@ -86,7 +88,8 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     }
 
     @Override
-    public EventFullDto postEvent(Long userId, NewEventDto newEventDto) {
+    @Transactional
+    public EventFullDto post(Long userId, NewEventDto newEventDto) {
         log.info("Добавление нового события userId = {} PrivateEventServiceImpl.postEvent", userId);
         checkUser(userId);
         LocalDateTime eventDate = LocalDateTime.parse(newEventDto.getEventDate(),
@@ -96,11 +99,11 @@ public class PrivateEventServiceImpl implements PrivatEventService {
         }
         Category category = categoryRepository
                 .findById(newEventDto.getCategory())
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Category not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена id = %s",
                         newEventDto.getCategory())));
         User user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s", userId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден id = %s", userId)));
         Location location = locationService.save(newEventDto.getLocation());
         Event event = eventMapper.toEvent(newEventDto, user, location, category, eventDate);
         event.setState(Status.PENDING);
@@ -114,7 +117,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s",
                         eventId)));
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ErrorRequestException("Sorry you no Event initiator");
@@ -123,35 +126,36 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto cancelEvent(Long userId, Long eventId) {
         log.info("Отмена события добавленного текущим пользователем eventId={} by userId={} " +
                 "PrivateEventServiceImpl.cancelEvent", eventId, userId);
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s",
                         eventId)));
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
-            throw new ErrorRequestException("Sorry you no Event initiator");
+            throw new ErrorRequestException("Ошибка вы не инициатор события");
         }
         if (event.getState().equals(Status.PUBLISHED) || event.getState().equals(Status.CANCELED)) {
-            throw new ErrorRequestException("Sorry but event status should be pending");
+            throw new ErrorRequestException("Ошибка статуса события");
         }
         event.setState(Status.CANCELED);
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     @Override
-    public List<RequestDto> getRequestByUser(Long userId, Long eventId) {
+    public List<RequestDto> getRequest(Long userId, Long eventId) {
         log.info("Получение информации о запросах на участие в событии текущего пользователя " +
-                "PrivateEventServiceImpl.getRequestByUser userId = {}, eventId={}", userId, eventId);
+                "PrivateEventServiceImpl.getRequest userId = {}, eventId={}", userId, eventId);
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s",
                         eventId)));
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
-            throw new ErrorRequestException("Sorry you no Event initiator");
+            throw new ErrorRequestException("Ошибка вы не инициатор события");
         }
         return requestRepository.findAllByEvent(eventId, userId).stream()
                 .map(RequestMapper::toRequestDto)
@@ -159,16 +163,17 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     }
 
     @Override
-    public RequestDto approveConfirmUserByEvent(Long userId, Long eventId, Long reqId) {
+    @Transactional
+    public RequestDto confirmUserByEvent(Long userId, Long eventId, Long reqId) {
         log.info("Подтверждение чужой заявки на участие в событии текущего пользователя reqId = {}, userId = {}, " +
-                "eventId = {} PrivateEventServiceImpl.approveConfirmUserByEvent", reqId, userId, eventId);
+                "eventId = {} PrivateEventServiceImpl.confirmUserByEvent", reqId, userId, eventId);
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s",
                         eventId)));
         Request request = requestRepository.findById(reqId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Request not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Запрос не найден id = %s",
                         reqId)));
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ErrorRequestException("Ошибка Вы не инициатор");
@@ -183,14 +188,16 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     }
 
     @Override
-    public RequestDto approveRejectUserByEvent(Long userId, Long eventId, Long reqId) {
+    @Transactional
+    public RequestDto rejectUserByEvent(Long userId, Long eventId, Long reqId) {
+
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s",
                         eventId)));
         Request request = requestRepository.findById(reqId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Request not found id = %s",
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Запрос не найден id = %s",
                         reqId)));
         if (!Objects.equals(event.getInitiator().getId(), userId))
             return null;
@@ -201,8 +208,8 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     public void checkUser(Long userId) { // много повторений кода в классе, убираем варнинги ))
         userRepository
                 .findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("User not found id = %s " +
-                        "PrivateEventServiceImpl", userId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден id = %s " +
+                        "PrivateEventServiceImpl.checkUser", userId)));
     }
 
 }

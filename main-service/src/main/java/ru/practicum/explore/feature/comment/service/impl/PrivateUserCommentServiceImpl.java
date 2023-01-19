@@ -86,4 +86,11 @@ class PrivateUserCommentServiceImpl implements PrivateUserCommentService {
         commentMapper.updateCommentFromUpdateComment(updateComment, comment);
         return commentMapper.toCommentDto(commentRepository.save(comment));
     }
+
+    @Override
+    public CommentDto getComment(Long comId, Long userId) {
+        return commentRepository.findById(comId).map(commentMapper::toCommentDto)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Комментарий не найден getComment " +
+                "id = %s", comId)));
+    }
 }

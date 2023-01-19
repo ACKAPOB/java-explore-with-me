@@ -38,5 +38,11 @@ public class PrivateUserCommentController {
         return privateUserCommentService.patchComment(userId, eventId, updateComment);
     }
 
+    @GetMapping("/comment/{comId}")
+    public void getComment(@PathVariable Long comId, @PathVariable Long userId) {
+        log.info("Get comment comId{}", comId);
+        privateUserCommentService.getComment(comId, userId);
+    }
+
 }
 

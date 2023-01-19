@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
@@ -35,9 +36,9 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<EventFullDto> getAllEvents(List<Long> users, List<Status> states, List<Long> categories,
-                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
-        log.info("Поиск событийAdmin AdminEventServiceImpl.getAllEvents users = {}", users);
+    public List<EventFullDto> getAll(List<Long> users, List<Status> states, List<Long> categories,
+                                     LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+        log.info("Поиск событийAdmin AdminEventServiceImpl.getAll users = {}", users);
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").descending());
         return eventRepository.getAllEvents(users, states, categories, rangeStart, rangeEnd, pageable)
                 .stream()
@@ -46,8 +47,9 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
-    public EventFullDto putEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
-        log.info("Редактирование события eventId = {} AdminEventServiceImpl.putEvent", eventId);
+    @Transactional
+    public EventFullDto put(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
+        log.info("Редактирование события eventId = {} AdminEventServiceImpl.put", eventId);
         LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         if (!eventDate.isAfter(LocalDateTime.now().minusHours(2)))
@@ -55,10 +57,10 @@ public class AdminEventServiceImpl implements AdminEventService {
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено" +
-                        " putEvent id = %s", eventId)));
+                        " put id = %s", eventId)));
         Category category = categoryRepository.findById(adminUpdateEventRequest.getCategory())
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не " +
-                        "найдена putEvent id = %s", eventId)));
+                        "найдена put id = %s", eventId)));
         event.setCategory(category);
         event.setEventDate(eventDate);
         Optional.ofNullable(adminUpdateEventRequest.getAnnotation()).ifPresent(event::setAnnotation);
@@ -73,23 +75,26 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
-    public EventFullDto approvePublishEvent(Long eventId) {
-        log.info("Публикация события eventId = {} AdminEventServiceImpl.approvePublishEvent", eventId);
+    @Transactional
+    public EventFullDto publishEvent(Long eventId) {
+        log.info("Публикация события eventId = {} AdminEventServiceImpl.publishEvent", eventId);
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s", eventId)));
         event.setState(Status.PUBLISHED);
         eventRepository.save(event);
-        log.info("Проверка  Status.PUBLISHED = {} AdminEventServiceImpl.approvePublishEvent", event.getState());
+        log.info("Проверка  Status.PUBLISHED = {} AdminEventServiceImpl.publishEvent", event.getState());
         return eventMapper.toEventFullDto(event);
     }
 
     @Override
-    public EventFullDto approveRejectEvent(Long eventId) {
-        log.info("Отклонение события AdminEventServiceImpl.approvePublishEvent eventId = {}", eventId);
+    @Transactional
+    public EventFullDto rejectEvent(Long eventId) {
+        log.info("Отклонение события AdminEventServiceImpl.rejectEvent eventId = {}", eventId);
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено rejectEvent " +
+                        "id = %s", eventId)));
         event.setState(Status.CANCELED);
         eventRepository.save(event);
         return eventMapper.toEventFullDto(event);

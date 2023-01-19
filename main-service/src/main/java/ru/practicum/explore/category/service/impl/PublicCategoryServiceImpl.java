@@ -23,8 +23,8 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryDto> findAllCategory(Integer from, Integer size) {
-        log.info("Получение категорий  CategoryServiceImpl.findAllCategory");
+    public List<CategoryDto> findAll(Integer from, Integer size) {
+        log.info("Получение категорий  CategoryServiceImpl.findAll");
         return categoryRepository
                 .findAll(PageRequest.of(from / size, size))
                 .stream()
@@ -33,12 +33,12 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
     }
 
     @Override
-    public Optional<CategoryDto> getCategoryById(Long catId) {
-        log.info("Получение информации о категории по её идентификатору CategoryServiceImpl.getCategoryById" +
+    public Optional<CategoryDto> get(Long catId) {
+        log.info("Получение информации о категории по её идентификатору CategoryServiceImpl.get" +
                 "  catId = {}", catId);
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена " +
-                        "getCategoryById id = %s", catId)));
+                        "get id = %s", catId)));
         return Optional.of(categoryMapper.toCategoryDto(category));
     }
 

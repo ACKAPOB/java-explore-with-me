@@ -25,14 +25,14 @@ public class PublicCategoryController {
     public List<CategoryDto> findAllCategory(@RequestParam(defaultValue = "0") Integer from,
                                              @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение категорий  PublicCategoryController.findAllCategory");
-        return categoryService.findAllCategory(from, size);
+        return categoryService.findAll(from, size);
     }
 
     @GetMapping("/{catId}")
     public Optional<CategoryDto> getCategoryById(@PathVariable Long catId) {
         log.info("Получение информации о категории по её идентификатору PublicCategoryController.getCategoryById" +
                 "  catId = {}", catId);
-        return categoryService.getCategoryById(catId);
+        return categoryService.get(catId);
     }
 }
 

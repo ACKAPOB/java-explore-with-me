@@ -23,14 +23,14 @@ public class PrivateUserRequestController {
     public List<RequestDto> getRequestsByUser(@PathVariable Long userId) {
         log.info("Получение информации о заявках текущего пользователя на участие в чужих событиях. userId = {} " +
                 "PrivateUserRequestController.getRequestsByUser", userId);
-        return requestService.getRequestsByUser(userId);
+        return requestService.get(userId);
     }
 
     @PostMapping
     public RequestDto postRequest(@PathVariable Long userId, @RequestParam Long eventId) {
         log.info("Добавление запроса от текущего пользователя на участие в событии userId = {} and eventId = {} " +
                 "PrivateUserRequestController.postRequestUser", userId, eventId);
-        return requestService.postRequest(userId, eventId);
+        return requestService.post(userId, eventId);
 
     }
 
@@ -38,7 +38,7 @@ public class PrivateUserRequestController {
     public RequestDto cancelRequestByUser(@PathVariable Long userId, @PathVariable Long requestId) {
         log.info("Отмена своего запроса на участие в событии userId = {}, requestId = {} " +
                 "PrivateUserRequestController.cancelRequestByUser", userId, requestId);
-        return requestService.cancelRequestByUser(userId, requestId);
+        return requestService.cancelRequest(userId, requestId);
     }
 
 }

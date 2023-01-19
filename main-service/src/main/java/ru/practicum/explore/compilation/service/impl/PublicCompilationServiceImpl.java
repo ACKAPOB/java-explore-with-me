@@ -25,10 +25,11 @@ import java.util.stream.Collectors;
 public class PublicCompilationServiceImpl implements PublicCompilationService {
     private final CompilationRepository compilationRepository;
     private final EventMapper eventMapper;
+    private final CompilationMapper compilationMapper;
 
     @Override
-    public List<CompilationDto> getCompilationAll(Boolean pinned, Integer from, Integer size) {
-        log.info("Получение подборок событий PublicCompilationServiceImpl.getCompilationAll");
+    public List<CompilationDto> findAll(Boolean pinned, Integer from, Integer size) {
+        log.info("Получение подборок событий PublicCompilationServiceImpl.findAll");
         Collection<Compilation> compilationCollection =
                 compilationRepository.findAllByPinned(pinned, PageRequest.of(from / size, size));
         List<CompilationDto> compilationDto = new ArrayList<>();
@@ -42,19 +43,19 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
                             .map(eventMapper::toEventShortDto)
                             .collect(Collectors.toList());
                 }
-                compilationDto.add(CompilationMapper.toCompilationDto(compilation, eventShortDtoList));
+                compilationDto.add(compilationMapper.toCompilationDto(compilation, eventShortDtoList));
             }
         }
         return compilationDto;
     }
 
     @Override
-    public Optional<CompilationDto> getCompilation(Long compId) {
-        log.info("Получение подборки событий по его id PublicCompilationServiceImpl.getCompilation compId={}", compId);
+    public Optional<CompilationDto> get(Long compId) {
+        log.info("Получение подборки событий по его id PublicCompilationServiceImpl.get compId={}", compId);
         Compilation compilation = compilationRepository
                 .findById(compId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Подборка не найдена id = %s " +
-                        "getCompilation", compId)));
+                        "get", compId)));
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
         if (compilation.getEvents().size() != 0) {
             eventShortDtoList = compilation
@@ -63,6 +64,6 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
                     .map(eventMapper::toEventShortDto)
                     .collect(Collectors.toList());
         }
-        return Optional.of(CompilationMapper.toCompilationDto(compilation, eventShortDtoList));
+        return Optional.of(compilationMapper.toCompilationDto(compilation, eventShortDtoList));
     }
 }

@@ -35,10 +35,10 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final StatsClient statsClient;
 
     @Override
-    public List<EventShortDto> getAllEvent(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
-                                           LocalDateTime rangeEnd, Boolean onlyAvailable, EventSort sort, Integer from,
-                                           Integer size, HttpServletRequest request) {
-        log.info("Получение событий с возможностью фильтрации PublicEventServiceImpl.getAllEvent text = {}", text);
+    public List<EventShortDto> getAll(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
+                                      LocalDateTime rangeEnd, Boolean onlyAvailable, EventSort sort, Integer from,
+                                      Integer size, HttpServletRequest request) {
+        log.info("Получение событий с возможностью фильтрации PublicEventServiceImpl.getAll text = {}", text);
         statsClient.save(request);
         String sorted;
         if (sort.equals(EventSort.EVENT_DATE)) {
@@ -48,25 +48,26 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
                     Pageable page = PageRequest.of(from, size, Sort.by(sorted).descending());
         return eventRepository
-                .findAllEventsByAnnotationAndDescriptionAndCategoryAndPaidAndEventDateOrderById(text, categories, paid, rangeStart, rangeEnd, page)
+                .findAllEventsByAnnotationAndDescriptionAndCategoryAndPaidAndEventDateOrderById(text, categories, paid,
+                        rangeStart, rangeEnd, page)
                 .stream()
                 .map(eventMapper::toEventShortDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<EventFullDto> getEvent(Long eventId, HttpServletRequest request) {
+    public Optional<EventFullDto> get(Long eventId, HttpServletRequest request) {
         log.info("Получение подробной информации об опубликованном событии по его идентификатору " +
-                "PublicEventServiceImpl.getEvent id={}", eventId);
+                "PublicEventServiceImpl.get id={}", eventId);
         Event event = eventRepository
                 .findById(eventId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s", eventId)));
         List<ViewStats> responseBody = statsClient.getViews(Collections.singletonList(event), true);
         if (!responseBody.isEmpty()) {
             event.setViews(responseBody.get(0).getHits());
         }
         statsClient.save(request);
         return Optional.of(eventRepository.findById(eventId).map(eventMapper::toEventFullDto)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event not found id = %s", eventId))));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s", eventId))));
     }
 }
