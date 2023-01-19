@@ -27,7 +27,7 @@ class AdminUserServiceImpl implements AdminUserService {
     public List<UserDto> getAll(List<Long> ids, Integer from, Integer size) {
         log.info("Получение информации о пользователях AdminUserServiceImpl.getAll");
         return userRepository
-                .findAllByIdOrderByIdDesc(ids, PageRequest.of(from / size, size))
+                .findAllSorted(ids, PageRequest.of(from / size, size))
                 .stream()
                 .map(userMapper::toUserDto)
                 .collect(Collectors.toList());

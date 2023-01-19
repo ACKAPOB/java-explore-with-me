@@ -12,5 +12,5 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.id IN ?1")
-    List<User> findAllByIdOrderByIdDesc(List<Long> ids, Pageable pageable);
+    List<User> findAllSorted(List<Long> ids, Pageable pageable);
 }

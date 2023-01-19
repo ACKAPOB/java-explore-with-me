@@ -1,9 +1,10 @@
-package ru.practicum.explore.feature.comment.mapper;
+package ru.practicum.explore.feature.comment.mapper.impl;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.feature.comment.dto.CommentDto;
 import ru.practicum.explore.feature.comment.dto.UpdateComment;
+import ru.practicum.explore.feature.comment.mapper.CommentMapper;
 import ru.practicum.explore.feature.comment.model.Comment;
 import ru.practicum.explore.user.model.User;
 
@@ -36,7 +37,7 @@ public class CommentMapperImpl implements CommentMapper {
     }
 
     @Override
-    public void updateCommentFromUpdateComment(UpdateComment updateComment, Comment comment) {
+    public void updateCommentFromComment(UpdateComment updateComment, Comment comment) {
         if (updateComment.getText() != null) {
             comment.setText(updateComment.getText());
         }

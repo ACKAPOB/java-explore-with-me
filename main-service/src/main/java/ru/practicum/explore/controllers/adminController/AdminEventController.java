@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.model.Status;
-import ru.practicum.explore.event.service.impl.AdminEventServiceImpl;
+import ru.practicum.explore.event.service.AdminEventService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,9 +16,9 @@ import java.util.List;
 @Slf4j
 public class AdminEventController {
 
-    private final AdminEventServiceImpl eventService;
+    private final AdminEventService eventService;
 
-    public AdminEventController(AdminEventServiceImpl eventService) {
+    public AdminEventController(AdminEventService eventService) {
 
         this.eventService = eventService;
     }

@@ -20,28 +20,28 @@ public class PrivateUserCommentController {
                                   @RequestBody CommentDto commentDto) {
         log.info("Добавление комментария пользователем userId = {}, eventId = {} " +
                 "PrivateUserCommentController.postComment", userId, eventId);
-        return privateUserCommentService.postComment(userId, eventId, commentDto);
+        return privateUserCommentService.post(userId, eventId, commentDto);
     }
 
     @DeleteMapping("/comment/{comId}")
     public void deleteComment(@PathVariable Long userId,
                               @PathVariable Long comId) {
-        log.info("delete comment by userId={} and comId{}", userId, comId);
-        privateUserCommentService.deleteComment(userId, comId);
+        log.info("Удаление коментария PrivateUserCommentController.deleteComment userId ={}, comId ={}", userId, comId);
+        privateUserCommentService.delete(userId, comId);
     }
 
     @PatchMapping("/events/{eventId}/comment")
     public CommentDto patchComment(@PathVariable Long userId,
                                    @PathVariable Long eventId,
                                    @RequestBody UpdateComment updateComment) {
-        log.info("update comment by userId={} and eventId{}", userId, eventId);
-        return privateUserCommentService.patchComment(userId, eventId, updateComment);
+        log.info("Обновление коментария PrivateUserCommentController.patchComment userId = {}, eventId = {}", userId, eventId);
+        return privateUserCommentService.patch(userId, eventId, updateComment);
     }
 
     @GetMapping("/comment/{comId}")
     public void getComment(@PathVariable Long comId, @PathVariable Long userId) {
-        log.info("Get comment comId{}", comId);
-        privateUserCommentService.getComment(comId, userId);
+        log.info("Получение коментария PrivateUserCommentController.getComment comId = {}", comId);
+        privateUserCommentService.get(comId, userId);
     }
 
 }

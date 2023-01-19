@@ -13,5 +13,5 @@ public interface CommentMapper {
 
     Comment toComment(CommentDto commentDto, User user, Event event);
 
-    void updateCommentFromUpdateComment(UpdateComment updateComment, Comment comment);
+    void updateCommentFromComment(UpdateComment updateComment, Comment comment);
 }

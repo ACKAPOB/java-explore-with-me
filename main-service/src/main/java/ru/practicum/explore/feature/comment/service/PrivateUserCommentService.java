@@ -6,11 +6,11 @@ import ru.practicum.explore.feature.comment.dto.UpdateComment;
 
 public interface PrivateUserCommentService {
 
-    CommentDto postComment(Long userId, Long eventId, CommentDto commentDto);
+    CommentDto post(Long userId, Long eventId, CommentDto commentDto);
 
-    void deleteComment(Long userId, Long comId);
+    void delete(Long userId, Long comId);
 
-    CommentDto patchComment(Long userId, Long eventId, UpdateComment updateComment);
+    CommentDto patch(Long userId, Long eventId, UpdateComment updateComment);
 
-    CommentDto getComment(Long comId, Long userId);
+    CommentDto get(Long comId, Long userId);
 }
