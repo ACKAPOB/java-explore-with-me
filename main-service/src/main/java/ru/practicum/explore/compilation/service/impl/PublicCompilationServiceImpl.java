@@ -30,6 +30,7 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
     @Override
     public List<CompilationDto> findAll(Boolean pinned, Integer from, Integer size) {
         log.info("Получение подборок событий PublicCompilationServiceImpl.findAll");
+
         Collection<Compilation> compilationCollection =
                 compilationRepository.findAllByPinned(pinned, PageRequest.of(from / size, size));
         List<CompilationDto> compilationDto = new ArrayList<>();
@@ -52,6 +53,7 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
     @Override
     public Optional<CompilationDto> get(Long compId) {
         log.info("Получение подборки событий по его id PublicCompilationServiceImpl.get compId={}", compId);
+
         Compilation compilation = compilationRepository
                 .findById(compId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Подборка не найдена id = %s " +

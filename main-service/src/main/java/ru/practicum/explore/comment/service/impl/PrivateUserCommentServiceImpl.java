@@ -34,6 +34,7 @@ class PrivateUserCommentServiceImpl implements PrivateUserCommentService {
     @Override
     public CommentDto post(Long userId, Long eventId, CommentDto commentDto) {
         log.info("Создание комментария PrivateUserCommentServiceImpl.post commentDto = {}", commentDto);
+
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено post " +
@@ -46,12 +47,14 @@ class PrivateUserCommentServiceImpl implements PrivateUserCommentService {
             throw new ErrorRequestException("Ошибка - текст комментария пуст post");
         if (event.getState() != Status.PUBLISHED)
             throw new ErrorRequestException("Ошибка - событие не опубликовано post");
+
         return commentMapper.toCommentDto(commentRepository.save(commentMapper.toComment(commentDto, user, event)));
     }
 
     @Override
     public void delete(Long userId, Long comId) {
         log.info("Удаление комментария PrivateUserCommentServiceImpl.post userId = {}, comId = {}", userId, comId);
+
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден delete Comment " +
@@ -68,6 +71,7 @@ class PrivateUserCommentServiceImpl implements PrivateUserCommentService {
     @Override
     public CommentDto patch(Long userId, Long eventId, UpdateComment updateComment) {
         log.info("Обновление комментария PrivateUserCommentServiceImpl.post userId = {}, eventId = {}", userId, eventId);
+
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден patch " +
@@ -87,12 +91,14 @@ class PrivateUserCommentServiceImpl implements PrivateUserCommentService {
         if (!Objects.equals(comment.getId(), userId))
             throw new ErrorRequestException("Ошибка - вы не автор комментария patch");
         commentMapper.updateCommentFromComment(updateComment, comment);
+
         return commentMapper.toCommentDto(commentRepository.save(comment));
     }
 
     @Override
     public CommentDto get(Long comId, Long userId) {
         log.info("Получение комментария PrivateUserCommentServiceImpl.post userId = {}, comId = {}", userId, comId);
+
         return commentRepository.findById(comId).map(commentMapper::toCommentDto)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Комментарий не найден get " +
                 "id = %s", comId)));

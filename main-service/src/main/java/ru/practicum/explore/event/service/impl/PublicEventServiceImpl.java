@@ -39,6 +39,7 @@ public class PublicEventServiceImpl implements PublicEventService {
                                       LocalDateTime rangeEnd, Boolean onlyAvailable, EventSort sort, Integer from,
                                       Integer size, HttpServletRequest request) {
         log.info("Получение событий с возможностью фильтрации PublicEventServiceImpl.getAll text = {}", text);
+
         statsClient.save(request);
         String sorted;
         if (sort.equals(EventSort.EVENT_DATE)) {
@@ -59,6 +60,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     public Optional<EventFullDto> get(Long eventId, HttpServletRequest request) {
         log.info("Получение подробной информации об опубликованном событии по его идентификатору " +
                 "PublicEventServiceImpl.get id={}", eventId);
+
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s", eventId)));

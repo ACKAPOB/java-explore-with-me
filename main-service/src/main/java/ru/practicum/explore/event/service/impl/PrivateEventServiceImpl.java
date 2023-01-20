@@ -47,7 +47,9 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     public Collection<EventShortDto> findAll(Long userId, Integer from, Integer size) {
         log.info("Получение событий, добавленных текущим пользователем " +
                 "PrivateEventServiceImpl.findAll text = {}", userId);
+
         checkUser(userId);
+
         return eventRepository
                 .findAllByInitiator_IdOrderById(userId, PageRequest.of(from / size, size)).stream()
                 .map(eventMapper::toEventShortDto)
@@ -59,6 +61,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     public EventFullDto patch(Long userId, UpdateEventRequest updateEventRequest) {
         log.info("Изменение события добавленного текущим пользователем userId = {} " +
                 "PrivateEventServiceImpl.patch", userId);
+
         checkUser(userId);
         Event event = eventRepository
                 .findById(updateEventRequest.getEventId())
@@ -84,6 +87,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
         eventMapper.updateEventFromNewEventDto(updateEventRequest, event);
         if (event.getState().equals(Status.CANCELED))
             event.setState(Status.PENDING);
+
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }
 
@@ -91,6 +95,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     @Transactional
     public EventFullDto post(Long userId, NewEventDto newEventDto) {
         log.info("Добавление нового события userId = {} PrivateEventServiceImpl.postEvent", userId);
+
         checkUser(userId);
         LocalDateTime eventDate = LocalDateTime.parse(newEventDto.getEventDate(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -107,6 +112,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
         Location location = locationService.save(newEventDto.getLocation());
         Event event = eventMapper.toEvent(newEventDto, user, location, category, eventDate);
         event.setState(Status.PENDING);
+
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }
 
@@ -114,6 +120,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     public EventFullDto getEventFull(Long userId, Long eventId) {
         log.info("Получение полной информации о событии добавленном текущим пользователем"  +
                 " eventId = {} userId= {} PrivateEventServiceImpl.getEventFull", eventId, userId);
+
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
@@ -122,6 +129,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ErrorRequestException("Sorry you no Event initiator");
         }
+
         return eventMapper.toEventFullDto(event);
     }
 
@@ -130,6 +138,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     public EventFullDto cancelEvent(Long userId, Long eventId) {
         log.info("Отмена события добавленного текущим пользователем eventId={} by userId={} " +
                 "PrivateEventServiceImpl.cancelEvent", eventId, userId);
+
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
@@ -142,6 +151,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
             throw new ErrorRequestException("Ошибка статуса события");
         }
         event.setState(Status.CANCELED);
+
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }
 
@@ -149,6 +159,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     public List<RequestDto> getRequest(Long userId, Long eventId) {
         log.info("Получение информации о запросах на участие в событии текущего пользователя " +
                 "PrivateEventServiceImpl.getRequest userId = {}, eventId={}", userId, eventId);
+
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
@@ -157,6 +168,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ErrorRequestException("Ошибка вы не инициатор события");
         }
+
         return requestRepository.findAllByEvent(eventId, userId).stream()
                 .map(RequestMapper::toRequestDto)
                 .collect(Collectors.toList());
@@ -167,6 +179,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
     public RequestDto confirmUserByEvent(Long userId, Long eventId, Long reqId) {
         log.info("Подтверждение чужой заявки на участие в событии текущего пользователя reqId = {}, userId = {}, " +
                 "eventId = {} PrivateEventServiceImpl.confirmUserByEvent", reqId, userId, eventId);
+
         checkUser(userId);
         Event event = eventRepository
                 .findById(eventId)
@@ -184,6 +197,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
             request.setStatus(StatusRequest.REJECTED);
         }
         request.setStatus(StatusRequest.CONFIRMED);
+
         return RequestMapper.toRequestDto(requestRepository.save(request));
     }
 
@@ -202,6 +216,7 @@ public class PrivateEventServiceImpl implements PrivatEventService {
         if (!Objects.equals(event.getInitiator().getId(), userId))
             return null;
         request.setStatus(StatusRequest.REJECTED);
+
         return RequestMapper.toRequestDto(requestRepository.save(request));
     }
 
