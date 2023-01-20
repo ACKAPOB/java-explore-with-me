@@ -1,20 +1,20 @@
-package ru.practicum.explore.feature.comment.service.impl;
+package ru.practicum.explore.comment.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import ru.practicum.explore.comment.dto.CommentDto;
+import ru.practicum.explore.comment.mapper.CommentMapper;
+import ru.practicum.explore.comment.repository.CommentRepository;
+import ru.practicum.explore.comment.service.PrivateUserCommentService;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.Status;
 import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.exception.ErrorRequestException;
 import ru.practicum.explore.exception.ObjectNotFoundException;
-import ru.practicum.explore.feature.comment.dto.CommentDto;
-import ru.practicum.explore.feature.comment.dto.UpdateComment;
-import ru.practicum.explore.feature.comment.mapper.CommentMapper;
-import ru.practicum.explore.feature.comment.model.Comment;
-import ru.practicum.explore.feature.comment.repository.CommentRepository;
-import ru.practicum.explore.feature.comment.service.PrivateUserCommentService;
+import ru.practicum.explore.comment.dto.UpdateComment;
+import ru.practicum.explore.comment.model.Comment;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.UserRepository;
 

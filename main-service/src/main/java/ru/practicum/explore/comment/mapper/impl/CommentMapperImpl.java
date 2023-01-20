@@ -1,11 +1,11 @@
-package ru.practicum.explore.feature.comment.mapper.impl;
+package ru.practicum.explore.comment.mapper.impl;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.explore.comment.dto.CommentDto;
+import ru.practicum.explore.comment.dto.UpdateComment;
+import ru.practicum.explore.comment.mapper.CommentMapper;
+import ru.practicum.explore.comment.model.Comment;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.feature.comment.dto.CommentDto;
-import ru.practicum.explore.feature.comment.dto.UpdateComment;
-import ru.practicum.explore.feature.comment.mapper.CommentMapper;
-import ru.practicum.explore.feature.comment.model.Comment;
 import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;

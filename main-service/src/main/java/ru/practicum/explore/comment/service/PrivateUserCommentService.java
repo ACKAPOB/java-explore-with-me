@@ -1,8 +1,8 @@
-package ru.practicum.explore.feature.comment.service;
+package ru.practicum.explore.comment.service;
 
 
-import ru.practicum.explore.feature.comment.dto.CommentDto;
-import ru.practicum.explore.feature.comment.dto.UpdateComment;
+import ru.practicum.explore.comment.dto.CommentDto;
+import ru.practicum.explore.comment.dto.UpdateComment;
 
 public interface PrivateUserCommentService {
 

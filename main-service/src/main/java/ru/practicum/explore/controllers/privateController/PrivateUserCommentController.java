@@ -2,9 +2,9 @@ package ru.practicum.explore.controllers.privateController;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explore.feature.comment.dto.CommentDto;
-import ru.practicum.explore.feature.comment.dto.UpdateComment;
-import ru.practicum.explore.feature.comment.service.PrivateUserCommentService;
+import ru.practicum.explore.comment.dto.CommentDto;
+import ru.practicum.explore.comment.dto.UpdateComment;
+import ru.practicum.explore.comment.service.PrivateUserCommentService;
 
 
 @RestController
