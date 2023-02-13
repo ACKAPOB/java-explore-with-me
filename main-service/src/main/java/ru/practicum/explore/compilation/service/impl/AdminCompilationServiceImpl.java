@@ -28,7 +28,8 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
 
     private final CompilationMapper compilationMapper;
 
-    public AdminCompilationServiceImpl(CompilationRepository compilationRepository, EventMapper eventMapper, EventRepository eventRepository, CompilationMapper compilationMapper) {
+    public AdminCompilationServiceImpl(CompilationRepository compilationRepository, EventMapper eventMapper,
+                                       EventRepository eventRepository, CompilationMapper compilationMapper) {
         this.compilationRepository = compilationRepository;
         this.eventMapper = eventMapper;
         this.eventRepository = eventRepository;
@@ -41,6 +42,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     public CompilationDto create(NewCompilationDto newCompilationDto) {
         log.info("обавление новой подборки newCompilationDto = {} " +
                 "AdminCompilationServiceImpl.create",newCompilationDto);
+
         List<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
         Compilation compilation = compilationMapper.toCompilation(newCompilationDto, events);
         compilationRepository.save(compilation);
@@ -48,6 +50,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
                 .stream()
                 .map(eventMapper::toEventShortDto)
                 .collect(Collectors.toList());
+
         return compilationMapper.toCompilationDto(compilation, eventShortDtoList);
     }
 
@@ -55,6 +58,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     @Transactional
     public void delete(Long compId) {
         log.info("Удаление подборки id = {} AdminCompilationServiceImpl.delete", compId);
+
         compilationRepository
                 .delete(compilationRepository.findById(compId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Подборка не найдена id = %s", compId))));
@@ -65,15 +69,15 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     public void deleteEvent(Long compId, Long eventId) {
         log.info("Удалить событие из подборки event eventId = {}, compId = {} " +
                 "AdminCompilationServiceImpl.deleteEvent", eventId, compId);
+
         Compilation compilation = compilationRepository
                 .findById(compId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Подборка не найдена id = %s", compId)));
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s", eventId)));
-        if (!compilation.getEvents().contains(event)) {
+        if (!compilation.getEvents().contains(event))
             return;
-        }
         compilation.getEvents().remove(event);
         compilationRepository.save(compilation);
     }
@@ -83,15 +87,15 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     public void addEvent(Long compId, Long eventId) {
         log.info("Добавить событие в подборку eventId = {} in compId id = {} " +
                 "AdminCompilationServiceImpl.addEvent", eventId, compId);
+
         Compilation compilation = compilationRepository
                 .findById(compId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Подборка не найдена id = %s", compId)));
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s", eventId)));
-        if (compilation.getEvents().contains(event)) {
+        if (compilation.getEvents().contains(event))
             return;
-        }
         compilation.getEvents().add(event);
         compilationRepository.save(compilation);
     }
@@ -100,6 +104,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     public void unpin(Long compId) {
         log.info("Открепить подборку на главной странице compId = {} " +
                 "AdminCompilationServiceImpl.unpinCompilation", compId);
+
         Compilation compilation = compilationRepository
                 .findById(compId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Подборка не найдена id = %s", compId)));
@@ -111,6 +116,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     public void pin(Long compId) {
         log.info("Закрепить подборку на главной странице compId = {} " +
                 "AdminCompilationServiceImpl.pinCompilation", compId);
+
         Compilation compilation = compilationRepository
                 .findById(compId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s", compId)));

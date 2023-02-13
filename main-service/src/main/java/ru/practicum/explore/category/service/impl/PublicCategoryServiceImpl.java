@@ -25,6 +25,7 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
     @Override
     public List<CategoryDto> findAll(Integer from, Integer size) {
         log.info("Получение категорий  CategoryServiceImpl.findAll");
+
         return categoryRepository
                 .findAll(PageRequest.of(from / size, size))
                 .stream()
@@ -36,6 +37,7 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
     public Optional<CategoryDto> get(Long catId) {
         log.info("Получение информации о категории по её идентификатору CategoryServiceImpl.get" +
                 "  catId = {}", catId);
+
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Категория не найдена " +
                         "get id = %s", catId)));

@@ -11,11 +11,11 @@ import ru.practicum.explore.location.service.LocationService;
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional
 public class LocationServiceImpl implements LocationService {
     private final LocationRepository locationRepository;
 
     @Override
-    @Transactional
     public Location save(Location location) {
         log.info("Сохранение локации события LocationServiceImpl.save location = {}", location);
         return locationRepository.save(location);

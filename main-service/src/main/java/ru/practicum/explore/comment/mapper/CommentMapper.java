@@ -1,10 +1,10 @@
-package ru.practicum.explore.feature.comment.mapper;
+package ru.practicum.explore.comment.mapper;
 
 
+import ru.practicum.explore.comment.dto.CommentDto;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.feature.comment.dto.CommentDto;
-import ru.practicum.explore.feature.comment.dto.UpdateComment;
-import ru.practicum.explore.feature.comment.model.Comment;
+import ru.practicum.explore.comment.dto.UpdateComment;
+import ru.practicum.explore.comment.model.Comment;
 import ru.practicum.explore.user.model.User;
 
 public interface CommentMapper {

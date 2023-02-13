@@ -26,6 +26,7 @@ class AdminUserServiceImpl implements AdminUserService {
     @Override
     public List<UserDto> getAll(List<Long> ids, Integer from, Integer size) {
         log.info("Получение информации о пользователях AdminUserServiceImpl.getAll");
+
         return userRepository
                 .findAllSorted(ids, PageRequest.of(from / size, size))
                 .stream()
@@ -37,6 +38,7 @@ class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public UserDto post(NewUserRequest userRequest) {
         log.info("Добавление нового пользователя newUserRequest = {} AdminUserServiceImpl.post", userRequest);
+
         try {
             return userMapper.toUserDto(userRepository.save(userMapper.toUser(userRequest)));
         } catch (Exception e)  {
@@ -49,6 +51,7 @@ class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public void delete(Long userId) {
         log.info("Удаление пользователя userId = {} AdminUserServiceImpl.delete", userId);
+
         userRepository
                 .delete(userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден " +

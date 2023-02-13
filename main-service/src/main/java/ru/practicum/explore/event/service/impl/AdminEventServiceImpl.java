@@ -39,6 +39,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     public List<EventFullDto> getAll(List<Long> users, List<Status> states, List<Long> categories,
                                      LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         log.info("Поиск событийAdmin AdminEventServiceImpl.getAll users = {}", users);
+
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").descending());
         return eventRepository.getAllEvents(users, states, categories, rangeStart, rangeEnd, pageable)
                 .stream()
@@ -50,6 +51,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Transactional
     public EventFullDto put(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
         log.info("Редактирование события eventId = {} AdminEventServiceImpl.put", eventId);
+
         LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         if (!eventDate.isAfter(LocalDateTime.now().minusHours(2)))
@@ -71,6 +73,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         Optional.ofNullable(adminUpdateEventRequest.getRequestModeration()).ifPresent(event::setRequestModeration);
         Optional.ofNullable(adminUpdateEventRequest.getTitle()).ifPresent(event::setTitle);
         eventRepository.save(event);
+
         return eventMapper.toEventFullDto(event);
     }
 
@@ -78,12 +81,14 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Transactional
     public EventFullDto publishEvent(Long eventId) {
         log.info("Публикация события eventId = {} AdminEventServiceImpl.publishEvent", eventId);
+
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено id = %s", eventId)));
         event.setState(Status.PUBLISHED);
         eventRepository.save(event);
         log.info("Проверка  Status.PUBLISHED = {} AdminEventServiceImpl.publishEvent", event.getState());
+
         return eventMapper.toEventFullDto(event);
     }
 
@@ -91,12 +96,14 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Transactional
     public EventFullDto rejectEvent(Long eventId) {
         log.info("Отклонение события AdminEventServiceImpl.rejectEvent eventId = {}", eventId);
+
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Событие не найдено rejectEvent " +
                         "id = %s", eventId)));
         event.setState(Status.CANCELED);
         eventRepository.save(event);
+
         return eventMapper.toEventFullDto(event);
     }
 

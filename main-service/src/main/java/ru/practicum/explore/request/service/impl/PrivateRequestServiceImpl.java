@@ -37,6 +37,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     public List<RequestDto> get(Long userId) {
         log.info("Получение информации о заявках текущего пользователя на участие в чужих событиях. userId = {} " +
                 "PrivateRequestServiceImpl.get", userId);
+
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользовтель не найден getRequestsByUser " +
@@ -52,6 +53,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     public RequestDto post(Long userId, Long eventId) {
         log.info("Добавление запроса от текущего пользователя на участие в событии userId = {} and eventId = {} " +
                 "PrivateRequestServiceImpl.post", userId, eventId);
+
         if (eventId == null) {
             log.info("Добавление запроса от текущего eventId == null");
             throw new ValidationException(String.format("Событие не найдено postRequest id = %s", userId));
@@ -99,6 +101,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     public RequestDto cancelRequest(Long userId, Long requestId) {
         log.info("Отмена своего запроса на участие в событии userId = {}, requestId = {} " +
                 "PrivateRequestServiceImpl.cancelRequest", userId, requestId);
+
         userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Пользователь не найден " +
@@ -112,6 +115,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Запрос не найден " +
                         "cancelRequest id = %s", requestId)));
         request.setStatus(StatusRequest.CANCELED);
+
         return RequestMapper.toRequestDto(requestRepository.save(request));
     }
 }
